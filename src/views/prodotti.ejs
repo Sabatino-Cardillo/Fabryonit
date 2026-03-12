@@ -1,0 +1,260 @@
+<% layout('layout') %>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .page-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      margin-top: 50px;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h2 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .add-product-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .add-product-form {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .add-product-form input[type="text"] {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .add-product-form input[type="text"]:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .btn-add {
+      padding: 0.65rem 1.5rem;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: #2980b9;
+    }
+
+    .products-section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f5f5f5;
+    }
+
+    th {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      color: #666;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    th:last-child {
+      text-align: center;
+      width: 120px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    tbody tr:hover {
+      background-color: #fafafa;
+    }
+
+    td {
+      padding: 1rem 1.5rem;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    td:last-child {
+      text-align: center;
+    }
+
+    .btn-delete {
+      padding: 0.4rem 1rem;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .btn-delete:hover {
+      background: #c0392b;
+    }
+
+    .pagination-container {
+      padding: 1.25rem;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pagination-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #666;
+      transition: all 0.2s;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      border-color: #3498db;
+      color: #3498db;
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .pagination-info {
+      color: #333;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .empty-state {
+      padding: 3rem;
+      text-align: center;
+      color: #999;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+    }
+  </style>
+
+  <div class="page-container">
+    <!-- Header -->
+    <div class="page-header">
+      <h2>Gestione Prodotti</h2>
+    </div>
+
+    <!-- Add Product -->
+    <div class="add-product-section">
+      <form method="POST" action="/prodotti/add" class="add-product-form">
+        <input 
+          type="text" 
+          name="codice" 
+          placeholder="Inserisci codice articolo" 
+          required
+        >
+        <button type="submit" class="btn-add">Aggiungi</button>
+      </form>
+    </div>
+
+    <!-- Products Table -->
+    <div class="products-section">
+      <% if (prodotti.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Codice Articolo</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% prodotti.forEach((prodotto, index) => { %>
+              <tr class="prodottoRow" data-index="<%= index %>">
+                <td><%= prodotto.codice %></td>
+                <td>
+                  <form action="/prodotti/remove" method="POST" style="margin: 0;">
+                    <input type="hidden" name="id" value="<%= prodotto.id %>">
+                    <button type="submit" class="btn-delete"><i class="bi bi-trash-fill"></i></button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <div class="pagination-container">
+          <button class="pagination-btn" onclick="cambiaPagina(-1)" id="btnPrev">←</button>
+          <span class="pagination-info"><span id="paginaCorrente">1</span></span>
+          <button class="pagination-btn" onclick="cambiaPagina(1)" id="btnNext">→</button>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <p>Nessun prodotto presente</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    let pagina = 1;
+    const righePerPagina = 10;
+    const righe = document.querySelectorAll('.prodottoRow');
+    const maxPagina = Math.ceil(righe.length / righePerPagina);
+
+    function mostraPagina() {
+      const inizio = (pagina - 1) * righePerPagina;
+      const fine = pagina * righePerPagina;
+
+      righe.forEach((riga, index) => {
+        riga.style.display = (index >= inizio && index < fine) ? '' : 'none';
+      });
+
+      document.getElementById('paginaCorrente').textContent = pagina;
+      
+      document.getElementById('btnPrev').disabled = pagina === 1;
+    }
+
+    function cambiaPagina(direzione) {
+      pagina = Math.max(1, Math.min(pagina + direzione, maxPagina));
+      mostraPagina();
+    }
+
+    document.addEventListener('DOMContentLoaded', mostraPagina);
+  </script>

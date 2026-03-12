@@ -1,0 +1,1270 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            margin-top: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: none
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-inline {
+            display: flex;
+            gap: 0.75rem;
+            align-items: end;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-field {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 0.65rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: #3498db;
+            color: white;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button.delete {
+            background: #e74c3c;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        button.delete:hover {
+            background: #c0392b;
+        }
+
+        button.save {
+            background: #27ae60;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        button.save:hover {
+            background: #229954;
+        }
+
+        .flex-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .client-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .client-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .client-box p {
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .client-box strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.75rem 0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        td input {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .add-product {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        .add-product h4 {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        #infoProdotto {
+            margin-left: 0.5rem;
+            font-weight: 500;
+            padding: 0.3rem 0.75rem;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        #infoProdotto:not(:empty) {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .search-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .search-box h4 {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        #pdfPopup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            backdrop-filter: blur(3px);
+        }
+
+        .popupContent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            height: 90%;
+            max-width: 1000px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .popupHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .popupHeader h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .popupFooter {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            text-align: center;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .popupFooter button {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            border-radius: 6px;
+        }
+
+        .popupContent iframe {
+            width: 100%;
+            flex: 1;
+            border: none;
+            background: white;
+        }
+
+        .close-btn {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .close-btn:hover {
+            background: #c0392b !important;
+        }
+
+        .print-button {
+            background: #27ae60;
+            margin-top: 1.25rem;
+            padding: 0.75rem 2rem;
+        }
+
+        .print-button:hover {
+            background: #229954;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        #risultatoRicerca {
+            margin-top: 1rem;
+        }
+
+        .search-result {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .search-result h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        .search-result p {
+            margin-bottom: 0.75rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .search-result table {
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .search-result button {
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .reopen-button {
+            background: #e67e22;
+        }
+
+        .reopen-button:hover {
+            background: #d35400;
+        }
+
+        .date-button {
+            background: #9b59b6;
+        }
+
+        .date-button:hover {
+            background: #8e44ad;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+
+            .flex-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-inline {
+                flex-direction: column;
+            }
+
+            .form-field {
+                min-width: 100%;
+            }
+
+            .popupContent {
+                width: 95%;
+                height: 95%;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Bolle di Consegna</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Carica Cliente</div>
+            <form id="clienteFormManuale">
+                <div class="form-inline">
+                    <div class="form-field">
+                        <label for="cliente_id_input">Seleziona Cliente:</label>
+                        <select id="cliente_id_input" name="cliente_id" required>
+                            <option value="">-- Seleziona --</option>
+                            <% clienti.forEach(c=> { %>
+                                <option value="<%= c.id %>">
+                                    <%= c.ragionesociale%> <%= c.cognome %> - <%= c.indirizzo_spedizione || c.indirizzo %> (<%= c.citta_spedizione || c.citta %>)
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <button type="submit">Carica Bolla</button>
+                </div>
+            </form>
+        </div>
+
+        <% if (bollaAperta) { %>
+            <!-- Sezione Data Personalizzata -->
+
+
+            <div class="flex-container">
+                <div class="client-box">
+                    <h4>Cliente</h4>
+                    <p><strong><%= clienteCorrente.nome %> <%= clienteCorrente.cognome %></strong></p>
+                    <p><%= clienteCorrente.indirizzo %></p>
+                    <p><%= clienteCorrente.cap %> <%= clienteCorrente.citta %> <%= clienteCorrente.provincia%></p>
+                </div>
+                <div class="client-box">
+                    <h4>Destinazione</h4>
+                    <p><strong><%= clienteCorrente.nome %> <%= clienteCorrente.cognome %></strong></p>
+                    <p><%= clienteCorrente.indirizzo_spedizione || clienteCorrente.indirizzo %></p>
+                    <p><%= clienteCorrente.cap_spedizione || clienteCorrente.cap %> <%= clienteCorrente.citta_spedizione || clienteCorrente.citta %> <%= clienteCorrente.provincia_spedizione || clienteCorrente.provincia %></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Righe bolla</div>
+                <table id="righeBolla">
+                    <thead>
+                        <tr>
+                            <th>Articolo</th>
+                            <th>Descrizione</th>
+                            <th>Paia</th>
+                            <th>Prezzo per paia</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% righe.forEach(r=> { %>
+                            <tr data-id="<%= r.id %>">
+                                <td>
+                                    <small style="color: #666;">Codice: <%= r.codice %></small>
+                                </td>
+                                <td>
+                                    <input type="text" class="input-descrizione" value="<%= r.descrizione %>" data-id="<%= r.id %>">
+                                </td>
+                                <td>
+                                    <input type="number" class="input-quantita" value="<%= r.quantita %>" min="1" data-id="<%= r.id %>">
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" class="input-prezzo" value="<%= r.prezzo %>" min="0" data-id="<%= r.id %>">
+                                </td>
+                                <td>
+                                    <button class="save" onclick="salvaModifica(<%= r.id %>)">Salva</button>
+                                    <button class="delete" onclick="eliminaRiga(<%= r.id %>)">Elimina</button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+                <div class="add-product">
+                    <h4>Aggiungi prodotto</h4>
+                    <form id="aggiungiProdottoForm">
+                        <div class="form-inline">
+                            <div class="form-field">
+                                <label for="codice_prodotto_input">Codice Prodotto:</label>
+                                <input type="text" id="codice_prodotto_input" name="codice_prodotto" required>
+                            </div>
+                            <div class="form-field" style="flex: 0 0 100px;">
+                                <label for="quantita">Paia:</label>
+                                <input type="number" name="quantita" id="quantita" min="1" value="1" required placeholder="Inserisci numero paia">
+                            </div>
+                            <div class="form-field">
+                                <label for="descrizione">Descrizione:</label>
+                                <input type="text" name="descrizione" id="descrizione" placeholder="Es. colore, taglia, ecc.">
+                            </div>
+                            <div class="form-field">
+                                <label for="prezzo">Prezzo  Per Paia:</label>
+                                <input type="number" step="0.01" name="prezzo" id="prezzo" min="0" value="0" placeholder="Prezzo per paia">
+                            </div>
+                            <button type="submit">Aggiungi</button>
+                        </div>
+                        <span id="infoProdotto"></span>
+                    </form>
+                </div>
+
+                <div class="add-product" style="margin-top: 1.5rem;">
+                    <h4 style="display: flex; align-items: center; cursor: pointer;" onclick="toggleOpzioniAggiuntive()">
+                        <span id="toggleIcon" style="margin-right: 0.5rem; transition: transform 0.3s;">▶</span>
+                        Opzioni Aggiuntive Bolla
+                    </h4>
+                    
+                    <div id="opzioniAggiuntive" style="display: none; margin-top: 1rem;">
+                        <form id="opzioniAggiuntiForm">
+                            <!-- Prima riga: Trasporto a cura, Porto, Causale, Aspetto beni -->
+                            <div class="form-inline">
+                                <div class="form-field">
+                                    <label for="trasporto_cura">Trasporto a cura di:</label>
+                                    <input 
+                                        type="text" 
+                                        id="trasporto_cura" 
+                                        name="trasporto_cura" 
+                                        placeholder="Es: Destinatario, Mittente, Corriere"
+                                        value="<%= bollaCorrente ? (bollaCorrente.trasporto_cura || 'Destinatario') : 'Destinatario' %>">
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label for="porto">Porto:</label>
+                                    <input 
+                                        type="text" 
+                                        id="porto" 
+                                        name="porto" 
+                                        placeholder="Es: Assegnato, Franco"
+                                        value="<%= bollaCorrente ? (bollaCorrente.porto || 'Assegnato') : 'Assegnato' %>">
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label for="causale">Causale:</label>
+                                    <input 
+                                        type="text" 
+                                        id="causale" 
+                                        name="causale" 
+                                        placeholder="Es: Vendita, Reso, Campione (lasciare vuoto per non visualizzare)"
+                                        value="<%= bollaCorrente ? (bollaCorrente.causale || '') : '' %>">
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label for="aspetto_beni">Aspetto beni:</label>
+                                    <input 
+                                        type="text" 
+                                        id="aspetto_beni" 
+                                        name="aspetto_beni" 
+                                        placeholder="Es: Apparentemente sani, Difettosi (lasciare vuoto per non visualizzare)"
+                                        value="<%= bollaCorrente ? (bollaCorrente.aspetto_beni || '') : '' %>">
+                                </div>
+                            </div>
+
+                            <!-- Seconda riga: Colli/Paia personalizzati -->
+                            <div class="form-inline" style="margin-top: 1rem;">
+                                <div class="form-field">
+                                    <label for="colli_custom">Colli (personalizzato - opzionale):</label>
+                                    <input 
+                                        type="text" 
+                                        id="colli_custom" 
+                                        name="colli_custom" 
+                                        placeholder="Lascia vuoto per calcolo automatico"
+                                        value="<%= bollaCorrente ? (bollaCorrente.colli_custom || '') : '' %>">
+                                    
+                                    <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                                        Usato solo se nelle note c'è "imballaggio"
+                                    </small>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label for="paia_custom">Paia (personalizzato - opzionale):</label>
+                                    <input 
+                                        type="text" 
+                                        id="paia_custom" 
+                                        name="paia_custom" 
+                                        placeholder="Lascia vuoto per calcolo automatico"
+                                        value="<%= bollaCorrente ? (bollaCorrente.paia_custom || '') : '' %>">
+                                    
+                                    <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                                        Usato solo se nelle note NON c'è "imballaggio"
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Terza riga: Note -->
+                            <div class="form-inline" style="margin-top: 1rem;">
+                                <div class="form-field" style="flex: 1;">
+                                    <label for="note">Note:</label>
+                                    <textarea 
+                                        id="note" 
+                                        name="note" 
+                                        rows="3" 
+                                        placeholder="Es: Imballaggio, Merce fragile, Consegna urgente"
+                                        style="width: 100%; padding: 0.65rem 1rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; resize: vertical; font-family: inherit;"><%= bollaCorrente ? (bollaCorrente.note || '') : '' %></textarea>
+
+                                    <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                                        💡 <strong>Suggerimento:</strong> Se scrivi "imballaggio" nelle note, nei colli apparirà il numero di articoli diversi. Altrimenti apparirà la somma totale delle paia.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <button type="submit" style="margin-top: 1rem; background: #27ae60; margin-bottom: 1rem;">
+                                💾 Salva Opzioni
+                            </button>
+                        </form>
+
+                                    <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-title">Impostazioni Data Bolla</div>
+                <div class="form-inline">
+                    <div class="form-field">
+                        <label for="data_bolla">Data del documento:</label>
+                        <input 
+                            type="date" 
+                            id="data_bolla" 
+                            name="data_bolla"
+                            value="<%= bollaCorrente && bollaCorrente.data_creazione_personalizzata 
+                                      ? new Date(bollaCorrente.data_creazione_personalizzata).toISOString().split('T')[0] 
+                                      : new Date().toISOString().split('T')[0] %>">
+                        <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                            Se lasciata vuota, verrà usata la data odierna. Puoi selezionare qualsiasi data.
+                        </small>
+                    </div>
+                    <button type="button" onclick="salvaDataBolla()" class="date-button">
+                        📅 Salva Data
+                    </button>
+                </div>
+            </div>
+                    </div>
+                </div>
+
+                <button onclick="stampaBolla()" class="print-button">Stampa Bolla</button>
+                <button onclick="annullaBolla()" class="close-btn" style="margin-top: 10px;">Annulla Bolla</button>
+            </div>
+        <% } else { %>
+            <div class="no-data">
+                <p>Nessuna bolla aperta. Seleziona un cliente per iniziare o modificarne una esistente.</p>
+            </div>
+        <% } %>
+
+        <div class="card">
+            <div class="search-box">
+                <h4>Ricerca Bolla</h4>
+                <div class="form-inline">
+                    <div class="form-field">
+                        <input id="numeroBolla" placeholder="Numero bolla">
+                    </div>
+                    <button onclick="cercaBolla()">Cerca</button>
+                </div>
+                <div id="risultatoRicerca"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfPopup">
+        <div class="popupContent">
+            <div class="popupHeader">
+                <h3>Anteprima Bolla</h3>
+                <button onclick="chiudiPopup()" style="background:#e74c3c; color:white;">Chiudi</button>
+            </div>
+            <iframe id="pdfViewer" style="width:100%; height:90%; border:none;"></iframe>
+            <div class="popupFooter">
+                <button onclick="scaricaPDF()" style="background:#27ae60;">Scarica PDF</button>
+                <button onclick="stampaPDF()" style="background:#3498db;">Stampa</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(message, focusSelector = null) {
+            const existingOverlays = document.querySelectorAll('[data-alert-overlay]');
+            existingOverlays.forEach(overlay => overlay.remove());
+
+            const overlay = document.createElement('div');
+            overlay.setAttribute('data-alert-overlay', 'true');
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = 10000;
+            overlay.style.backdropFilter = 'blur(3px)';
+
+            const alertBox = document.createElement('div');
+            alertBox.style.backgroundColor = 'white';
+            alertBox.style.padding = '2rem';
+            alertBox.style.borderRadius = '10px';
+            alertBox.style.boxShadow = '0 10px 40px rgba(0,0,0,0.2)';
+            alertBox.style.maxWidth = '400px';
+            alertBox.style.width = '90%';
+            alertBox.style.animation = 'slideIn 0.3s ease';
+            alertBox.innerHTML = `
+                <style>
+                    @keyframes slideIn {
+                        from { opacity: 0; transform: translateY(-20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                </style>
+                <p style="margin: 0 0 1.5rem 0; color: #2c3e50; font-size: 1rem; line-height: 1.5;">${message}</p>
+                <button id="alertOkBtn" style="
+                    width: 100%; padding: 0.75rem; background: #3498db; color: white;
+                    border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 500;
+                    cursor: pointer; transition: background 0.2s;
+                ">OK</button>
+            `;
+
+            overlay.appendChild(alertBox);
+            document.body.appendChild(overlay);
+
+            const okBtn = document.getElementById('alertOkBtn');
+            const closeAlert = () => {
+                if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                if (focusSelector) {
+                    const input = document.querySelector(focusSelector);
+                    if (input) input.focus();
+                }
+            };
+
+            okBtn.addEventListener('mouseover', () => okBtn.style.background = '#2980b9');
+            okBtn.addEventListener('mouseout', () => okBtn.style.background = '#3498db');
+            okBtn.addEventListener('click', closeAlert);
+
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    closeAlert();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        function showConfirm(message, onConfirm, onCancel = null) {
+            const existingConfirms = document.querySelectorAll('[data-confirm-overlay]');
+            existingConfirms.forEach(overlay => overlay.remove());
+
+            const overlay = document.createElement('div');
+            overlay.setAttribute('data-confirm-overlay', 'true');
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(0,0,0,0.6); display: flex; align-items: center;
+                justify-content: center; z-index: 10000; backdrop-filter: blur(3px);
+            `;
+
+            const confirmBox = document.createElement('div');
+            confirmBox.style.cssText = `
+                background: white; padding: 2rem; border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 450px;
+                width: 90%; animation: slideIn 0.3s ease;
+            `;
+
+            confirmBox.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                    <div style="
+                        width: 48px; height: 48px; background: #fff3cd; border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center;
+                        margin-right: 1rem; flex-shrink: 0;
+                    ">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 1.2rem; font-weight: 600;">Attenzione</h3>
+                </div>
+                <p style="margin: 0 0 1.5rem 0; color: #555; font-size: 1rem; line-height: 1.6;">${message}</p>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button id="confirmCancelBtn" style="
+                        padding: 0.75rem 1.5rem; background: #e0e0e0; color: #333;
+                        border: none; border-radius: 6px; font-size: 0.95rem;
+                        font-weight: 500; cursor: pointer; transition: background 0.2s;
+                    ">Annulla</button>
+                    <button id="confirmOkBtn" style="
+                        padding: 0.75rem 1.5rem; background: #e74c3c; color: white;
+                        border: none; border-radius: 6px; font-size: 0.95rem;
+                        font-weight: 500; cursor: pointer; transition: background 0.3s;
+                    ">Conferma</button>
+                </div>
+            `;
+
+            overlay.appendChild(confirmBox);
+            document.body.appendChild(overlay);
+
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+
+            const closeConfirm = () => {
+                if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            };
+
+            okBtn.addEventListener('click', () => {
+                closeConfirm();
+                if (onConfirm) onConfirm();
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                closeConfirm();
+                if (onCancel) onCancel();
+            });
+
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    closeConfirm();
+                    if (onCancel) onCancel();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+
+            okBtn.addEventListener('mouseover', () => okBtn.style.background = '#c0392b');
+            okBtn.addEventListener('mouseout', () => okBtn.style.background = '#e74c3c');
+            cancelBtn.addEventListener('mouseover', () => cancelBtn.style.background = '#d0d0d0');
+            cancelBtn.addEventListener('mouseout', () => cancelBtn.style.background = '#e0e0e0');
+            okBtn.focus();
+        }
+
+        let currentPDFBlobUrl = null;
+        let currentClienteId = <%= clienteSelezionato || 'null' %>;
+        let currentBollaId = <%= JSON.stringify(bollaId) %>;
+        let prodottoIdSelezionato = null;
+
+        // Selezione cliente manuale
+        document.getElementById('clienteFormManuale').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const clienteId = document.getElementById('cliente_id_input').value;
+            if (!clienteId) return showAlert('Inserisci ID cliente');
+
+            const res = await fetch('/bolle/cliente', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    cliente_id: clienteId
+                })
+            });
+
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                showAlert('Errore nel caricamento cliente');
+            }
+        });
+
+        // Salva data personalizzata bolla
+        async function salvaDataBolla() {
+            const dataInput = document.getElementById('data_bolla');
+            const dataPersonalizzata = dataInput.value;
+            
+            if (!dataPersonalizzata) {
+                // Se l'utente cancella la data, inviamo null per usare la data di default (oggi)
+                showConfirm('Vuoi rimuovere la data personalizzata? Verrà usata la data odierna.', async () => {
+                    await inviaDataBolla(null);
+                });
+                return;
+            }
+            
+            await inviaDataBolla(dataPersonalizzata);
+        }
+
+        async function inviaDataBolla(dataPersonalizzata) {
+            try {
+                const res = await fetch('/bolle/aggiorna-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bolla_id: currentBollaId,
+                        data_personalizzata: dataPersonalizzata
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    showAlert('✅ Data bolla salvata con successo!');
+                } else {
+                    showAlert('❌ Errore: ' + result.error);
+                }
+            } catch (err) {
+                console.error('Errore salvataggio data:', err);
+                showAlert('❌ Errore durante il salvataggio della data');
+            }
+        }
+
+        // Ricerca codice prodotto
+        document.getElementById('codice_prodotto_input')?.addEventListener('input', async function () {
+            const codice = this.value.trim();
+            const infoBox = document.getElementById('infoProdotto');
+
+            if (!codice) {
+                infoBox.textContent = '';
+                prodottoIdSelezionato = null;
+                return;
+            }
+
+            try {
+                const res = await fetch(`/prodotti/codice/${codice}`);
+                const result = await res.json();
+
+                if (res.ok && result.prodotto) {
+                    prodottoIdSelezionato = result.prodotto.id;
+                    infoBox.textContent = `Prodotto trovato`;
+                    infoBox.style.color = 'green';
+                } else {
+                    prodottoIdSelezionato = null;
+                    infoBox.textContent = 'Prodotto non trovato';
+                    infoBox.style.color = 'red';
+                }
+            } catch (err) {
+                console.error(err);
+                infoBox.textContent = 'Errore';
+                infoBox.style.color = 'red';
+            }
+        });
+
+        // Aggiunta prodotto
+        document.getElementById('aggiungiProdottoForm')?.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            if (!prodottoIdSelezionato) {
+                return showAlert('Codice prodotto non valido');
+            }
+
+            const quantita = document.getElementById('quantita').value;
+            const descrizione = document.getElementById('descrizione').value;
+            const prezzo = document.getElementById('prezzo').value;
+
+            const res = await fetch('/bolle/aggiungi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prodotto_id: prodottoIdSelezionato,
+                    quantita: quantita,
+                    descrizione: descrizione,
+                    prezzo: prezzo || 0,
+                    bolla_id: currentBollaId
+                })
+            });
+
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                const err = await res.json();
+                showAlert('Errore: ' + err.message);
+            }
+        });
+
+        // Salva modifica riga
+        async function salvaModifica(rigaId) {
+            const descrizioneInput = document.querySelector(`.input-descrizione[data-id='${rigaId}']`);
+            const quantitaInput = document.querySelector(`.input-quantita[data-id='${rigaId}']`);
+            const prezzoInput = document.querySelector(`.input-prezzo[data-id='${rigaId}']`);
+
+            const descrizione = descrizioneInput.value;
+            const quantita = quantitaInput.value;
+            const prezzo = prezzoInput.value;
+
+            if (!quantita || parseInt(quantita) <= 0) {
+                return showAlert('Inserisci una quantità valida');
+            }
+
+            try {
+                const res = await fetch(`/bolle/modifica/${rigaId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ descrizione, quantita, prezzo: prezzo || 0, bolla_id: currentBollaId })
+                });
+
+                if (res.ok) {
+                    showAlert('Modifica salvata con successo!');
+                } else {
+                    const err = await res.json();
+                    showAlert('Errore: ' + err.message);
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Errore durante la modifica');
+            }
+        }
+
+        // Elimina riga
+        async function eliminaRiga(rigaId) {
+            showConfirm('Sei sicuro di voler eliminare questa riga?', async () => {
+                try {
+                    const response = await fetch(`/bolle/elimina/${rigaId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ bolla_id: currentBollaId })
+                    });
+
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        const error = await response.json();
+                        showAlert('Errore: ' + error.message);
+                    }
+                } catch (error) {
+                    console.error('Errore:', error);
+                    showAlert('Si è verificato un errore durante l\'eliminazione');
+                }
+            });
+        }
+
+        // Annulla bolla
+        async function annullaBolla() {
+            if (!currentBollaId) {
+                showAlert('Nessuna bolla da annullare');
+                return;
+            }
+
+            showConfirm(
+                'Sei sicuro di voler annullare questa bolla?<br><strong>Tutti i dati verranno persi definitivamente.</strong>',
+                async () => {
+                    try {
+                        const response = await fetch('/bolle/annulla', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ bolla_id: currentBollaId })
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok && result.success) {
+                            currentBollaId = null;
+                            currentClienteId = null;
+                            window.location.replace('/bolle');
+                        } else {
+                            showAlert('Errore: ' + (result.message || 'Impossibile annullare la bolla'));
+                        }
+                    } catch (error) {
+                        console.error('Errore:', error);
+                        showAlert('Errore durante l\'annullamento della bolla');
+                    }
+                }
+            );
+        }
+
+        // Stampa bolla
+        async function stampaBolla() {
+            try {
+                const response = await fetch('/bolle/stampa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bolla_id: currentBollaId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const byteCharacters = atob(result.pdf);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                    if (currentPDFBlobUrl) URL.revokeObjectURL(currentPDFBlobUrl);
+                    currentPDFBlobUrl = URL.createObjectURL(blob);
+
+                    document.getElementById('pdfViewer').src = currentPDFBlobUrl;
+                    document.getElementById('pdfPopup').style.display = 'block';
+
+                    currentBollaId = null;
+                } else {
+                    showAlert('Errore: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Si è verificato un errore durante la generazione della bolla');
+            }
+        }
+
+        // Cerca bolla
+        async function cercaBolla() {
+            const numero = document.getElementById('numeroBolla').value;
+            if (!numero) {
+                showAlert('Inserisci un numero bolla');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/bolle/cerca?numero=${numero}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const { bolla, righe } = result;
+                    let html = `
+                        <div class="search-result">
+                            <h4>Bolla n. ${bolla.numero} - ${bolla.nome} ${bolla.cognome}</h4>
+                            <p>Data: ${new Date(bolla.data_creazione).toLocaleDateString('it-IT')}</p>
+                            <table border="1" style="width:100%; margin-top:10px;">
+                                <thead>
+                                    <tr>
+                                        <th>Articolo</th>
+                                        <th>Descrizione</th>
+                                        <th>Quantità</th>
+                                        <th>Prezzo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${righe.map(r => `
+                                        <tr>
+                                            <td>${r.codice}</td>
+                                            <td>${r.descrizione || ''}</td>
+                                            <td>${r.quantita}</td>
+                                            <td>€ ${parseFloat(r.prezzo || 0).toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <button onclick="ristampaBolla(${bolla.id})">Ristampa</button>
+                            <button onclick="riapriBolla(${bolla.id})" class="reopen-button">Riapri per modifiche</button>
+                        </div>
+                    `;
+                    document.getElementById('risultatoRicerca').innerHTML = html;
+                } else {
+                    showAlert('Bolla non trovata');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Errore durante la ricerca');
+            }
+        }
+
+        // Ristampa bolla
+        async function ristampaBolla(bollaId) {
+            try {
+                const response = await fetch(`/bolle/ristampa/${bollaId}`);
+                const result = await response.json();
+
+                if (!result.success || !result.pdf) {
+                    showAlert('Errore durante la ristampa: ' + (result.error || 'PDF non disponibile'));
+                    return;
+                }
+
+                const byteCharacters = atob(result.pdf);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                if (currentPDFBlobUrl) URL.revokeObjectURL(currentPDFBlobUrl);
+                currentPDFBlobUrl = URL.createObjectURL(blob);
+
+                document.getElementById('pdfViewer').src = currentPDFBlobUrl;
+                document.getElementById('pdfPopup').style.display = 'block';
+
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Errore durante la ristampa della bolla');
+            }
+        }
+
+        // Riapri bolla
+        async function riapriBolla(bollaId) {
+            showConfirm('Stai per riaprire la bolla chiusa per eventuali modifiche', async () => {
+                try {
+                    const response = await fetch(`/bolle/riapri/${bollaId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        const error = await response.json();
+                        showAlert('Errore: ' + error.message);
+                    }
+                } catch (error) {
+                    console.error('Errore:', error);
+                    showAlert('Errore durante la riapertura della bolla');
+                }
+            });
+        }
+
+        // Funzioni popup PDF
+        function chiudiPopup() {
+            document.getElementById('pdfPopup').style.display = 'none';
+            window.location.reload();
+        }
+
+        function scaricaPDF() {
+            if (!currentPDFBlobUrl) return;
+            const a = document.createElement('a');
+            a.href = currentPDFBlobUrl;
+            a.download = 'bolla_consegna.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function stampaPDF() {
+            if (!currentPDFBlobUrl) return;
+            const iframe = document.getElementById('pdfViewer');
+            iframe.contentWindow.print();
+        }
+
+        // Funzioni opzioni aggiuntive
+        function toggleOpzioniAggiuntive() {
+            const container = document.getElementById('opzioniAggiuntive');
+            const icon = document.getElementById('toggleIcon');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                icon.textContent = '▼';
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                container.style.display = 'none';
+                icon.textContent = '▶';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Salva opzioni aggiuntive
+        document.getElementById('opzioniAggiuntiForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const trasportoCura = document.getElementById('trasporto_cura').value || 'Destinatario';
+            const porto = document.getElementById('porto').value || 'Assegnato';
+            const causale = document.getElementById('causale').value;
+            const aspettoBeni = document.getElementById('aspetto_beni').value;
+            const note = document.getElementById('note').value;
+            const colliCustom = document.getElementById('colli_custom').value;
+            const paiaCustom = document.getElementById('paia_custom').value;
+            
+            try {
+                const res = await fetch('/bolle/salva-opzioni', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bolla_id: currentBollaId,
+                        trasporto_cura: trasportoCura,
+                        porto: porto,
+                        causale: causale,
+                        aspetto_beni: aspettoBeni,
+                        note: note,
+                        colli_custom: colliCustom,
+                        paia_custom: paiaCustom
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    showAlert('✅ Opzioni salvate con successo!');
+                } else {
+                    showAlert('❌ Errore: ' + result.error);
+                }
+            } catch (err) {
+                console.error('Errore salvataggio opzioni:', err);
+                showAlert('❌ Errore durante il salvataggio');
+            }
+        });
+    </script>

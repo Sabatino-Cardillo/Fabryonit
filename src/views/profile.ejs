@@ -1,0 +1,286 @@
+<% layout('layout') %>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .page-container {
+        max-width: 900px;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h2 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.65rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .btn-primary {
+        padding: 0.65rem 1.5rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+
+    .btn-secondary {
+        padding: 0.65rem 1.5rem;
+        background: #ecf0f1;
+        color: #2c3e50;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+        margin-left: 1rem;
+    }
+
+    .btn-secondary:hover {
+        background: #dfe6e9;
+        color: #2c3e50;
+    }
+
+    .alert {
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-error {
+        background: #fee;
+        color: #c33;
+        border-left: 4px solid #c33;
+    }
+
+    .password-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+    }
+
+    .password-section h5 {
+        margin-bottom: 1rem;
+        color: #2c3e50;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-secondary {
+            margin-left: 0;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h2>Il Mio Profilo</h2>
+    </div>
+
+    <% if (success) { %>
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i> <%= success %>
+        </div>
+    <% } %>
+
+    <% if (error) { %>
+        <div class="alert alert-error">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
+    <% } %>
+
+    <!-- Informazioni Azienda -->
+    <div class="profile-section">
+        <div class="section-title">
+            <i class="bi bi-building"></i> Informazioni Azienda
+        </div>
+
+        <form action="/profile/update" method="POST">
+            <div class="form-group">
+                <label>Ragione Sociale</label>
+                <input type="text" name="ragione_sociale" value="<%= societa.ragione_sociale %>" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" value="<%= societa.username %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Partita IVA</label>
+                    <input type="text" name="partita_iva" value="<%= societa.partita_iva %>" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Indirizzo</label>
+                <input type="text" name="indirizzo" value="<%= societa.indirizzo %>" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Comune</label>
+                    <input type="text" name="comune" value="<%= societa.comune %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Provincia</label>
+                    <input type="text" name="provincia" value="<%= societa.provincia %>" maxlength="2" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CAP</label>
+                    <input type="number" name="cap" value="<%= societa.cap %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Telefono</label>
+                    <input type="tel" name="telefono" value="<%= societa.telefono %>" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" value="<%= societa.email %>" required>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-save"></i> Salva Modifiche
+            </button>
+            <a href="/" class="btn-secondary">
+                <i class="bi bi-x-circle"></i> Annulla
+            </a>
+        </form>
+    </div>
+
+    <!-- Cambio Password -->
+    <div class="profile-section">
+        <div class="section-title">
+            <i class="bi bi-shield-lock"></i> Sicurezza
+        </div>
+
+        <div class="password-section">
+            <h5>Cambia Password</h5>
+
+            <form action="/profile/change-password" method="POST">
+                <div class="form-group">
+                    <label>Password Attuale</label>
+                    <input type="password" name="old_password" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nuova Password</label>
+                        <input type="password" name="new_password" minlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Conferma Nuova Password</label>
+                        <input type="password" name="confirm_password" minlength="6" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-key"></i> Cambia Password
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-hide alerts dopo 5 secondi
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>

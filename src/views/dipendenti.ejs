@@ -1,0 +1,815 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+            margin-top: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219653;
+        }
+
+        .add-client-section {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[name="nome"],
+        input[name="cognome"],
+        input[name="cf"],
+        input[name="data"],
+        input[name="residenza"],
+        input[name="comune"],
+        input[name="cap"],
+        input[name="provincia"],
+        input[name="ruolo"],
+        input[name="iban"] {
+            padding: 0.5rem 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            flex: 1;
+            min-width: 140px;
+            height: 38px;
+        }
+
+        input[type="text"]:focus,
+        input[name="nome"]:focus,
+        input[name="cognome"]:focus,
+        input[name="cf"]:focus,
+        input[name="data"]:focus,
+        input[name="residenza"]:focus,
+        input[name="comune"]:focus,
+        input[name="cap"]:focus,
+        input[name="provincia"]:focus,
+        input[name="ruolo"]:focus,
+        input[name="iban"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button[type="submit"] {
+            padding: 0.5rem 1.2rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+            height: 38px;
+        }
+
+        button[type="submit"]:hover {
+            background: #2980b9;
+        }
+
+        .btn-cancel {
+            padding: 0.5rem 1.2rem;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+            height: 38px;
+            line-height: 1.5;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .employees-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            font-size: 0.85rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        thead {
+            background: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 0.7rem 0.6rem;
+            text-align: left;
+            color: #666;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: none;
+            white-space: nowrap;
+        }
+
+        th:last-child {
+            text-align: center;
+            width: 150px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background-color: #f5f5f5;
+        }
+
+        td {
+            padding: 0.6rem 0.6rem;
+            color: #333;
+            border: none;
+            white-space: nowrap;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compact-cell {
+            max-width: 100px;
+        }
+
+        td:last-child {
+            text-align: center;
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .form-elimina button[type="submit"] {
+            padding: 0.3rem 0.6rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            height: 28px;
+            min-width: 60px;
+        }
+
+        .form-elimina button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        .form-modifica button[type="submit"] {
+            padding: 0.3rem 0.6rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            height: 28px;
+            min-width: 60px;
+        }
+
+        .form-modifica button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        /* ⭐ Stile per il bottone PDF */
+        .btn-pdf {
+            padding: 0.3rem 0.6rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            height: 28px;
+            min-width: 60px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-pdf:hover {
+            background: #219653;
+            color: white;
+        }
+
+        .forms {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .forms form,
+        .forms a {
+            margin: 0;
+            display: inline-block;
+        }
+
+        .pagination {
+            padding: 1rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .pagination button {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #paginaCorrente {
+            color: #333;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-left: 4px solid #e74c3c;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #c0392b;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-error i {
+            font-size: 1.1rem;
+        }
+
+        .presenze-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: #27ae60;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .presenze-badge.zero {
+            background: #95a5a6;
+        }
+
+        .presenze-badge.low {
+            background: #f39c12;
+        }
+
+        .presenze-badge.high {
+            background: #27ae60;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stile per il corpo della tabella con altezza fissa e scroll */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        /* Scrollbar personalizzata */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .mese-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .mese-selector label {
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .mese-selector input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .mese-selector .btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            height: 34px;
+        }
+        
+        /* Stile per la sezione mese corrente */
+        .current-month-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e8f4fc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .current-month-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .current-month-text i {
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        
+        /* Stili per notifiche */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.9rem;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.success {
+            background: #27ae60;
+        }
+        
+        .notification.info {
+            background: #3498db;
+        }
+        
+        .notification.warning {
+            background: #f39c12;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Gestione Dipendenti</h2>
+            <div class="header-actions">
+                <a href="/dipendenti/presenze" class="btn btn-primary">Gestione Presenze</a>
+                <a href="/dipendenti/presenze/report" class="btn btn-success">Report Presenze</a>
+                <a href="/dipendenti/presenze/pdf?mese=<%= meseCorrente %>" class="btn btn-danger">Esporta PDF Mese Corrente</a>
+            </div>
+        </div>
+        
+        <!-- ⭐ Mostra mese corrente -->
+        <div class="current-month-section">
+            <div class="current-month-text">
+                <i class="bi bi-calendar-month"></i>
+                Mese corrente: <%= new Date(meseCorrente + '-01').toLocaleDateString('it-IT', { month: 'long', year: 'numeric' }) %>
+            </div>
+            <div>
+                <a href="/dipendenti/presenze/pdf?mese=<%= meseCorrente %>" class="btn btn-danger" download>
+                    <i class="bi bi-file-pdf"></i> Esporta PDF Mese Corrente
+                </a>
+            </div>
+        </div>
+
+        <% if (errore) { %>
+            <div class="alert-error" id="popup">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <%= errore %>
+            </div>
+        <% } %>
+
+        <!-- ⭐ Selettore mese per PDF individuali -->
+        <div class="mese-selector">
+            <label for="mesePdf">Seleziona mese per PDF individuali:</label>
+            <input type="month" id="mesePdf" value="<%= meseCorrente %>">
+            <button class="btn btn-primary" onclick="aggiornaLinkPdf()">Applica</button>
+            <span style="font-size: 0.8rem; color: #666; margin-left: 10px;">
+                Il mese selezionato verrà applicato a tutti i link PDF
+            </span>
+        </div>
+
+        <% if (dipendenteInModifica) { %>
+            <section class="add-client-section">
+                <h3 class="section-title">Modifica Dipendente</h3>
+                <form method="POST" action="/dipendenti/update">
+                    <input type="hidden" name="id" value="<%= dipendenteInModifica.id %>">
+                    <input name="nome" placeholder="Nome" value="<%= dipendenteInModifica.nome %>" required>
+                    <input name="cognome" placeholder="Cognome" value="<%= dipendenteInModifica.cognome || '' %>">
+                    <input name="cf" placeholder="Codice Fiscale" value="<%= dipendenteInModifica.cf || '' %>">
+                    <input name="data" type="date" placeholder="Data" value="<%= dipendenteInModifica.data_formattata || '' %>">
+                    <input name="comune" placeholder="Comune" value="<%= dipendenteInModifica.comune || '' %>">
+                    <input name="cap" placeholder="CAP" value="<%= dipendenteInModifica.cap || '' %>">
+                    <input name="provincia" placeholder="Provincia" value="<%= dipendenteInModifica.provincia || '' %>">
+                    <input name="residenza" placeholder="Indirizzo" value="<%= dipendenteInModifica.residenza || '' %>">
+                    <input name="ruolo" placeholder="Ruolo" value="<%= dipendenteInModifica.ruolo || '' %>">
+                    <input name="iban" placeholder="IBAN" value="<%= dipendenteInModifica.iban || '' %>">
+                    <button type="submit">Salva</button>
+                    <a href="/dipendenti" class="btn-cancel">Annulla</a>
+                </form>
+            </section>
+        <% } else { %>
+            <section class="add-client-section">
+                <h3 class="section-title">Aggiungi Nuovo Dipendente</h3>
+                <form method="POST" action="/dipendenti/add">
+                    <input name="nome" placeholder="Nome" required>
+                    <input name="cognome" placeholder="Cognome">
+                    <input name="cf" placeholder="Codice Fiscale">
+                    <input name="data" type="date" placeholder="Data">
+                    <input name="comune" placeholder="Comune">
+                    <input name="cap" placeholder="CAP">
+                    <input name="provincia" placeholder="Provincia">
+                    <input name="residenza" placeholder="Indirizzo">
+                    <input name="ruolo" placeholder="Ruolo">
+                    <input name="iban" placeholder="IBAN">
+                    <button type="submit">Aggiungi</button>
+                </form>
+            </section>
+        <% } %>
+
+        <section class="employees-section">
+            <div class="table-container">
+                <table id="dipendentiTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cognome</th>
+                            <th>CF</th>
+                            <th>Data</th>
+                            <th>Comune</th>
+                            <th>CAP</th>
+                            <th>Prov</th>
+                            <th>Indirizzo</th>
+                            <th>Ruolo</th>
+                            <th>IBAN</th>
+                            <th>Presenze Mese</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% dipendenti.forEach((dipendente, index)=> { 
+                            const presenze = dipendente.presenze_mese_corrente || 0;
+                            let badgeClass = 'presenze-badge';
+                            if (presenze === 0) badgeClass += ' zero';
+                            else if (presenze < 10) badgeClass += ' low';
+                            else badgeClass += ' high';
+                        %>
+                            <tr class="dipendenteRow" data-index="<%= index %>">
+                                <td class="compact-cell">
+                                    <%= dipendente.nome %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.cognome || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.cf || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.data ? new Date(dipendente.data).toLocaleDateString('it-IT') : '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.comune || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.cap || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.provincia || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.residenza || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.ruolo || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <%= dipendente.iban || '' %>
+                                </td>
+                                <td class="compact-cell">
+                                    <span class="<%= badgeClass %>">
+                                        <%= presenze %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="forms">
+                                        <form action="/dipendenti/modifica" method="POST" class="form-modifica">
+                                            <input type="hidden" name="id" value="<%= dipendente.id %>">
+                                            <button type="submit" title="Modifica">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </form>
+                                        <form action="/dipendenti/remove" method="POST" class="form-elimina">
+                                            <input type="hidden" name="id" value="<%= dipendente.id %>">
+                                            <button type="submit" title="Elimina">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                        <!-- ⭐ Bottone PDF individuale -->
+                                        <a href="/dipendenti/presenze/pdf/<%= dipendente.id %>?mese=<%= meseCorrente %>" 
+                                           class="btn-pdf" 
+                                           title="Scarica PDF presenze mese corrente"
+                                           data-dipendente-id="<%= dipendente.id %>">
+                                            <i class="bi bi-file-pdf"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" onclick="cambiaPagina(-1)" id="btnPrev">←</button>
+                <span id="paginaCorrente">1</span>
+                <button class="pagination-btn" onclick="cambiaPagina(1)">→</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let pagina = 1;
+        const righePerPagina = 30;
+        const righe = document.querySelectorAll('.dipendenteRow');
+
+        function mostraPagina() {
+            const inizio = (pagina - 1) * righePerPagina;
+            const fine = pagina * righePerPagina;
+
+            righe.forEach((riga, index) => {
+                riga.style.display = (index >= inizio && index < fine) ? '' : 'none';
+            });
+
+            document.getElementById('paginaCorrente').textContent = pagina;
+            document.getElementById('btnPrev').disabled = pagina === 1;
+        }
+
+        function cambiaPagina(direzione) {
+            const maxPagina = Math.ceil(righe.length / righePerPagina);
+            pagina = Math.max(1, Math.min(pagina + direzione, maxPagina));
+            mostraPagina();
+        }
+
+        // ⭐ Funzione per aggiornare i link PDF con il mese selezionato
+        function aggiornaLinkPdf() {
+            const meseSelezionato = document.getElementById('mesePdf').value;
+            if (!meseSelezionato) {
+                alert('Seleziona un mese valido');
+                return;
+            }
+            
+            const linkPdf = document.querySelectorAll('.btn-pdf');
+            linkPdf.forEach(link => {
+                const dipendenteId = link.getAttribute('data-dipendente-id');
+                link.href = `/dipendenti/presenze/pdf/${dipendenteId}?mese=${meseSelezionato}`;
+                link.title = `Scarica PDF presenze ${meseSelezionato}`;
+            });
+            
+            // Aggiorna anche il bottone "Esporta PDF Mese Corrente"
+            const btnEsportaTutti = document.querySelector('.btn-danger[href*="/dipendenti/presenze/pdf"]');
+            if (btnEsportaTutti) {
+                btnEsportaTutti.href = `/dipendenti/presenze/pdf?mese=${meseSelezionato}`;
+                if (meseSelezionato === '<%= meseCorrente %>') {
+                    btnEsportaTutti.textContent = `Esporta PDF Mese Corrente`;
+                } else {
+                    const meseFormattato = new Date(meseSelezionato + '-01').toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+                    btnEsportaTutti.textContent = `Esporta PDF ${meseFormattato}`;
+                }
+            }
+            
+            // Mostra notifica invece di alert
+            const meseFormattato = new Date(meseSelezionato + '-01').toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+            showNotification(`Mese aggiornato a: ${meseFormattato}`, 'success');
+        }
+
+        // ⭐ Funzione per mostrare notifiche
+        function showNotification(message, type = 'info') {
+            // Rimuovi notifiche precedenti
+            const oldNotifications = document.querySelectorAll('.notification');
+            oldNotifications.forEach(notification => notification.remove());
+            
+            // Crea nuova notifica
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Rimuovi automaticamente dopo 3 secondi
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            mostraPagina();
+            
+            // Auto-hide per l'alert di errore
+            setTimeout(() => {
+                const alert = document.getElementById("popup");
+                if (alert) {
+                    alert.style.display = "none";
+                }
+            }, 5000);
+            
+            // Aggiorna link PDF quando si cambia il mese
+            document.getElementById('mesePdf').addEventListener('change', aggiornaLinkPdf);
+            
+            // Prevenire click sui link PDF (per evitare popup)
+            document.querySelectorAll('.btn-pdf').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Non fare nulla di speciale, lascia che il link funzioni normalmente
+                    // Questo evita popup o comportamenti indesiderati
+                });
+            });
+        });
+    </script>

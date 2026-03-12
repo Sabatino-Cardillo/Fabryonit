@@ -1,0 +1,577 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+            margin-top: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-client-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .form-section h4 {
+            font-size: 1rem;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #495057;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            height: 40px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .btn-submit {
+            padding: 0.65rem 1.5rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+            height: 40px;
+        }
+
+        .btn-submit:hover {
+            background: #2980b9;
+        }
+
+        .btn-cancel {
+            padding: 0.65rem 1.5rem;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .clients-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            color: #666;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border: none;
+        }
+
+        th:last-child {
+            text-align: center;
+            width: 120px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background-color: #f5f5f5;
+        }
+
+        td {
+            padding: 0.9rem 0.75rem;
+            color: #333;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        td:last-child {
+            text-align: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .form-modifica button[type="submit"] {
+            padding: 0.4rem 0.75rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .form-modifica button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        .form-elimina button[type="submit"] {
+            padding: 0.4rem 0.75rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .form-elimina button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        .pagination {
+            padding: 1.25rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #paginaCorrente {
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-left: 4px solid #e74c3c;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #c0392b;
+            font-size: 0.95rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-error i {
+            font-size: 1.2rem;
+        }
+
+        .copy-address-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 0.25rem;
+        }
+
+        .copy-address-btn:hover {
+            background: #5a6268;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Gestione Clienti</h2>
+        </div>
+
+        <% if (errore) { %>
+            <div class="alert-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <%= errore %>
+            </div>
+            <% } %>
+
+                <% if (clienteInModifica) { %>
+                    <section class="add-client-section">
+                        <h3 class="section-title">Modifica Cliente</h3>
+                        <form method="POST" action="/clienti/update">
+                            <input type="hidden" name="id" value="<%= clienteInModifica.id %>">
+                            
+                            <div class="form-section">
+                                <h4>Informazioni Anagrafiche</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                    <div class="form-group">
+                                        <label for="ragionesociale">Ragione Sociale *</label>
+                                        <input type="text" id="ragionesociale" name="ragionesociale" placeholder="Ragione Sociale" value="<%= clienteInModifica.ragionesociale || '' %>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="piva">Partita IVA</label>
+                                        <input type="text" id="piva" name="piva" placeholder="Partita IVA" value="<%= clienteInModifica.piva || '' %>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4>Indirizzo Legale/Sede</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="indirizzo">Indirizzo</label>
+                                        <input type="text" id="indirizzo" name="indirizzo" placeholder="Via, Numero Civico" value="<%= clienteInModifica.indirizzo || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="citta">Città</label>
+                                        <input type="text" id="citta" name="citta" placeholder="Città" value="<%= clienteInModifica.citta || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="provincia">Provincia</label>
+                                        <input type="text" id="provincia" name="provincia" placeholder="Provincia" value="<%= clienteInModifica.provincia || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cap">CAP</label>
+                                        <input type="text" id="cap" name="cap" placeholder="CAP" value="<%= clienteInModifica.cap || '' %>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4>Indirizzo di Spedizione <button type="button" class="copy-address-btn" onclick="copiaIndirizzo()">Copia da Indirizzo Legale</button></h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="indirizzo_spedizione">Indirizzo Spedizione</label>
+                                        <input type="text" id="indirizzo_spedizione" name="indirizzo_spedizione" placeholder="Via, Numero Civico" value="<%= clienteInModifica.indirizzo_spedizione || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="citta_spedizione">Città Spedizione</label>
+                                        <input type="text" id="citta_spedizione" name="citta_spedizione" placeholder="Città" value="<%= clienteInModifica.citta_spedizione || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="provincia_spedizione">Provincia Spedizione</label>
+                                        <input type="text" id="provincia_spedizione" name="provincia_spedizione" placeholder="Provincia" value="<%= clienteInModifica.provincia_spedizione || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cap_spedizione">CAP Spedizione</label>
+                                        <input type="text" id="cap_spedizione" name="cap_spedizione" placeholder="CAP" value="<%= clienteInModifica.cap_spedizione || '' %>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-submit">Salva Modifiche</button>
+                                <a href="/clienti" class="btn-cancel">Annulla</a>
+                            </div>
+                        </form>
+                    </section>
+                    <% } else { %>
+                        <section class="add-client-section">
+                            <h3 class="section-title">Aggiungi Nuovo Cliente</h3>
+                            <form method="POST" action="/clienti/add">
+                                
+                                <div class="form-section">
+                                    <h4>Informazioni Anagrafiche</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="ragionesociale">Ragione Sociale *</label>
+                                            <input type="text" id="ragionesociale" name="ragionesociale" placeholder="Ragione Sociale" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="piva">Partita IVA</label>
+                                            <input type="text" id="piva" name="piva" placeholder="Partita IVA">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h4>Indirizzo Legale/Sede</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="indirizzo">Indirizzo</label>
+                                            <input type="text" id="indirizzo" name="indirizzo" placeholder="Via, Numero Civico">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="citta">Città</label>
+                                            <input type="text" id="citta" name="citta" placeholder="Città">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="provincia">Provincia</label>
+                                            <input type="text" id="provincia" name="provincia" placeholder="Provincia">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cap">CAP</label>
+                                            <input type="text" id="cap" name="cap" placeholder="CAP">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h4>Indirizzo di Spedizione <button type="button" class="copy-address-btn" onclick="copiaIndirizzo()">Copia da Indirizzo Legale</button></h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="indirizzo_spedizione">Indirizzo Spedizione</label>
+                                            <input type="text" id="indirizzo_spedizione" name="indirizzo_spedizione" placeholder="Via, Numero Civico">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="citta_spedizione">Città Spedizione</label>
+                                            <input type="text" id="citta_spedizione" name="citta_spedizione" placeholder="Città">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="provincia_spedizione">Provincia Spedizione</label>
+                                            <input type="text" id="provincia_spedizione" name="provincia_spedizione" placeholder="Provincia">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cap_spedizione">CAP Spedizione</label>
+                                            <input type="text" id="cap_spedizione" name="cap_spedizione" placeholder="CAP">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-submit">Aggiungi Cliente</button>
+                                </div>
+                            </form>
+                        </section>
+                        <% } %>
+
+                            <section class="clients-section">
+                                <table id="clientiTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Ragione Sociale</th>
+                                            <th>P.IVA</th>
+                                            <th>Indirizzo Legale</th>
+                                            <th>Città</th>
+                                            <th>CAP</th>
+                                            <th>Provincia</th>
+                                            <th>Indirizzo Sped.</th>
+                                            <th>Città Sped.</th>
+                                            <th>CAP Sped.</th>
+                                            <th>Prov. Sped.</th>
+                                            <th>Azioni</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% clienti.forEach((cliente, index)=> { %>
+                                            <tr class="clienteRow" data-index="<%= index %>">
+                                                <td>
+                                                    <%= cliente.ragionesociale || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.piva || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.indirizzo || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.citta || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.cap || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.provincia || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.indirizzo_spedizione || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.citta_spedizione || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.cap_spedizione || '' %>
+                                                </td>
+                                                <td>
+                                                    <%= cliente.provincia_spedizione || '' %>
+                                                </td>
+                                                <td>
+                                                    <form action="/clienti/modifica" method="POST" style="margin: 0;"
+                                                        class="form-modifica">
+                                                        <input type="hidden" name="id" value="<%= cliente.id %>">
+                                                        <button type="submit"><i class="bi bi-pencil"></i></button>
+                                                    </form>
+                                                    <form action="/clienti/remove" method="POST" style="margin: 0;"
+                                                        class="form-elimina">
+                                                        <input type="hidden" name="id" value="<%= cliente.id %>">
+                                                        <button type="submit"><i class="bi bi-trash-fill"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+
+                                <div class="pagination">
+                                    <button class="pagination-btn" onclick="cambiaPagina(-1)" id="btnPrev">←</button>
+                                    <span id="paginaCorrente">1</span>
+                                    <button class="pagination-btn" onclick="cambiaPagina(1)">→</button>
+                                </div>
+                            </section>
+    </div>
+
+    <script>
+        let pagina = 1;
+        const righePerPagina = 10;
+        const righe = document.querySelectorAll('.clienteRow');
+
+        function mostraPagina() {
+            const inizio = (pagina - 1) * righePerPagina;
+            const fine = pagina * righePerPagina;
+
+            righe.forEach((riga, index) => {
+                riga.style.display = (index >= inizio && index < fine) ? '' : 'none';
+            });
+
+            document.getElementById('paginaCorrente').textContent = pagina;
+            document.getElementById('btnPrev').disabled = pagina === 1;
+        }
+
+        function cambiaPagina(direzione) {
+            const maxPagina = Math.ceil(righe.length / righePerPagina);
+            pagina = Math.max(1, Math.min(pagina + direzione, maxPagina));
+            mostraPagina();
+        }
+
+        function copiaIndirizzo() {
+            const indirizzo = document.getElementById('indirizzo').value;
+            const citta = document.getElementById('citta').value;
+            const provincia = document.getElementById('provincia').value;
+            const cap = document.getElementById('cap').value;
+
+            document.getElementById('indirizzo_spedizione').value = indirizzo;
+            document.getElementById('citta_spedizione').value = citta;
+            document.getElementById('provincia_spedizione').value = provincia;
+            document.getElementById('cap_spedizione').value = cap;
+        }
+
+        document.addEventListener('DOMContentLoaded', mostraPagina);
+    </script>

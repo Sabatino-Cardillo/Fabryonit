@@ -1,0 +1,837 @@
+<% layout('layout') %>
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 50px auto 0;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .header-section h2 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.8rem;
+    }
+    
+    .date-selector {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .date-selector label {
+        font-weight: 500;
+        color: #555;
+        font-size: 0.9rem;
+    }
+    
+    .date-selector input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        height: 38px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        height: 38px;
+        line-height: 1.5;
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+    
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+    
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #219653;
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+    
+    .btn-warning {
+        background: #f39c12;
+        color: white;
+    }
+    
+    .btn-warning:hover {
+        background: #e67e22;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .registra-presenza-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .registra-presenza-section h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 1.2rem;
+    }
+    
+    .form-presenza {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        align-items: end;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+        font-size: 0.9rem;
+    }
+    
+    .form-group select,
+    .form-group input {
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        height: 38px;
+    }
+    
+    .form-group button {
+        height: 38px;
+    }
+    
+    .presenze-list {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-top: 30px;
+    }
+    
+    .presenze-list h3 {
+        padding: 15px 20px;
+        margin: 0;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+    
+    .table-container {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    
+    .table-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+    
+    thead {
+        background: #f5f5f5;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    th {
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #666;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+        font-size: 0.85rem;
+    }
+    
+    td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+    }
+    
+    tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .empty-state {
+        padding: 40px;
+        text-align: center;
+        color: #999;
+    }
+    
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+        min-width: 70px;
+        text-align: center;
+    }
+    
+    .badge-entrata {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .badge-uscita {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .alert-info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+        padding: 12px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .today-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #3498db;
+        color: white;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .btn-elimina {
+        padding: 4px 8px;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: 0.2s;
+    }
+    
+    .btn-elimina:hover {
+        background: #c0392b;
+    }
+    
+    .btn-elimina-small {
+        padding: 2px 6px;
+        font-size: 0.75rem;
+    }
+    
+    .azioni-cell {
+        display: flex;
+        gap: 5px;
+    }
+    
+    /* POPUP PERSONALIZZATO */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .custom-modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        animation: modalFadeIn 0.3s ease-out;
+    }
+    
+    .custom-modal-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .custom-modal-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: #e74c3c;
+    }
+    
+    .custom-modal-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .custom-modal-body {
+        margin-bottom: 25px;
+    }
+    
+    .custom-modal-message {
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.5;
+    }
+    
+    .custom-modal-details {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 15px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .custom-modal-detail-item {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .custom-modal-detail-label {
+        font-weight: 600;
+        color: #666;
+        min-width: 100px;
+    }
+    
+    .custom-modal-detail-value {
+        color: #2c3e50;
+    }
+    
+    .custom-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    
+    .custom-modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        min-width: 100px;
+    }
+    
+    .custom-modal-btn-cancel {
+        background: #95a5a6;
+        color: white;
+    }
+    
+    .custom-modal-btn-cancel:hover {
+        background: #7f8c8d;
+    }
+    
+    .custom-modal-btn-confirm {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .custom-modal-btn-confirm:hover {
+        background: #c0392b;
+    }
+    
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes modalFadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .date-selector {
+            width: 100%;
+        }
+        
+        .form-presenza {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .azioni-cell {
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .btn-elimina-small {
+            width: 100%;
+            padding: 4px;
+        }
+        
+        .custom-modal-content {
+            width: 95%;
+            padding: 20px;
+        }
+        
+        .custom-modal-footer {
+            flex-direction: column;
+        }
+        
+        .custom-modal-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header-section">
+        <div>
+            <h2>Gestione Presenze Dipendenti</h2>
+            <% if (dataSelezionata === oggi) { %>
+                <span class="today-badge">Oggi</span>
+            <% } %>
+        </div>
+        <div class="date-selector">
+            <form method="GET" action="/dipendenti/presenze" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" value="<%= dataSelezionata %>" max="<%= oggi %>" style="min-width: 150px;">
+                <button type="submit" class="btn btn-primary">Vai</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="/dipendenti" class="btn btn-secondary">← Torna ai Dipendenti</a>
+        <a href="/dipendenti/presenze/report" class="btn btn-success">Report Mensile</a>
+        <a href="/dipendenti/presenze/pdf?mese=<%= meseCorrente %>" class="btn btn-danger">Esporta PDF Mese Corrente</a>
+    </div>
+    
+    <div class="registra-presenza-section">
+        <h3>Registra Nuova Presenza</h3>
+        <form method="POST" action="/dipendenti/presenza" class="form-presenza">
+            <div class="form-group">
+                <label for="dipendente_id">Dipendente</label>
+                <select id="dipendente_id" name="dipendente_id" required>
+                    <option value="">Seleziona dipendente</option>
+                    <% dipendenti.forEach(dipendente => { 
+                        const selected = req && req.body && req.body.dipendente_id == dipendente.id ? 'selected' : '';
+                    %>
+                        <option value="<%= dipendente.id %>" <%= selected %>>
+                            <%= dipendente.cognome %> <%= dipendente.nome %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="data_form">Data</label>
+                <input type="date" id="data_form" name="data" 
+                       value="<%= req && req.body && req.body.data ? req.body.data : dataSelezionata %>" 
+                       required max="<%= oggi %>">
+            </div>
+            
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo" required>
+                    <% 
+                    const tipoOptions = ['entrata', 'uscita'];
+                    tipoOptions.forEach(tipo => {
+                        const selected = req && req.body && req.body.tipo === tipo ? 'selected' : tipo === 'entrata' ? 'selected' : '';
+                    %>
+                        <option value="<%= tipo %>" <%= selected %>>
+                            <%= tipo === 'entrata' ? 'Entrata' : 'Uscita' %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="ora">Ora</label>
+                <input type="time" id="ora" name="ora" 
+                       value="<%= req && req.body && req.body.ora ? req.body.ora : new Date().toTimeString().slice(0,5) %>" 
+                       required>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Registra</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="presenze-list">
+        <h3>Presenze del <%= new Date(dataSelezionata).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></h3>
+        <div class="table-container">
+            <% if (presenze.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dipendente</th>
+                            <th>Tipo</th>
+                            <th>Ora</th>
+                            <th>Data Registrazione</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% presenze.forEach(presenza => { 
+                            const dataPresenza = presenza.data ? presenza.data : dataSelezionata;
+                        %>
+                            <tr>
+                                <td><strong><%= presenza.cognome %> <%= presenza.nome %></strong></td>
+                                <td>
+                                    <span class="badge badge-<%= presenza.tipo %>">
+                                        <%= presenza.tipo === 'entrata' ? 'Entrata' : 'Uscita' %>
+                                    </span>
+                                </td>
+                                <td><%= presenza.ora.slice(0,5) %></td>
+                                <td><%= new Date(presenza.created_at || Date.now()).toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'short' }) %></td>
+                                <td class="azioni-cell">
+                                    <button type="button" 
+                                            class="btn-elimina btn-elimina-small" 
+                                            onclick="showDeleteModal(
+                                                '<%= presenza.id %>', 
+                                                '<%= presenza.cognome %> <%= presenza.nome %>', 
+                                                '<%= presenza.tipo === 'entrata' ? 'Entrata' : 'Uscita' %>', 
+                                                '<%= presenza.ora.slice(0,5) %>', 
+                                                '<%= new Date(presenza.created_at || Date.now()).toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'short' }) %>',
+                                                '<%= dataPresenza %>'
+                                            )">
+                                        Elimina
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <div class="empty-state">
+                    <p>Nessuna presenza registrata per questa data</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- POPUP PERSONALIZZATO PER ELIMINAZIONE -->
+<div id="deleteModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3 class="custom-modal-title">Conferma Eliminazione</h3>
+        </div>
+        <div class="custom-modal-body">
+            <p class="custom-modal-message">
+                Sei sicuro di voler eliminare questa presenza?<br>
+                <strong>Questa azione non può essere annullata.</strong>
+            </p>
+            <div class="custom-modal-details">
+                <div class="custom-modal-detail-item">
+                    <span class="custom-modal-detail-label">Dipendente:</span>
+                    <span class="custom-modal-detail-value" id="modalDipendente"></span>
+                </div>
+                <div class="custom-modal-detail-item">
+                    <span class="custom-modal-detail-label">Tipo:</span>
+                    <span class="custom-modal-detail-value" id="modalTipo"></span>
+                </div>
+                <div class="custom-modal-detail-item">
+                    <span class="custom-modal-detail-label">Ora:</span>
+                    <span class="custom-modal-detail-value" id="modalOra"></span>
+                </div>
+                <div class="custom-modal-detail-item">
+                    <span class="custom-modal-detail-label">Data Registrazione:</span>
+                    <span class="custom-modal-detail-value" id="modalDataReg"></span>
+                </div>
+                <div class="custom-modal-detail-item">
+                    <span class="custom-modal-detail-label">Data Presenza:</span>
+                    <span class="custom-modal-detail-value" id="modalDataPresenza"></span>
+                </div>
+            </div>
+        </div>
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-modal-btn custom-modal-btn-cancel" onclick="hideDeleteModal()">
+                Annulla
+            </button>
+            <form id="deleteForm" method="POST" action="/dipendenti/presenze/elimina">
+                <input type="hidden" name="presenza_id" id="deletePresenzaId">
+                <input type="hidden" name="data_presenza" id="deleteDataPresenza">
+            </form>
+            <button type="button" class="custom-modal-btn custom-modal-btn-confirm" onclick="confirmDelete()">
+                Elimina
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variabile globale per memorizzare l'ID della presenza da eliminare
+    let presenzaIdToDelete = null;
+    let dataPresenzaToDelete = null;
+    
+    // Funzione per mostrare il popup di eliminazione
+    function showDeleteModal(id, dipendente, tipo, ora, dataReg, dataPresenza) {
+        presenzaIdToDelete = id;
+        dataPresenzaToDelete = dataPresenza;
+        
+        // Popola i dettagli nel popup
+        document.getElementById('modalDipendente').textContent = dipendente;
+        document.getElementById('modalTipo').textContent = tipo;
+        document.getElementById('modalOra').textContent = ora;
+        document.getElementById('modalDataReg').textContent = dataReg;
+        document.getElementById('modalDataPresenza').textContent = new Date(dataPresenza).toLocaleDateString('it-IT');
+        
+        // Mostra il popup
+        const modal = document.getElementById('deleteModal');
+        modal.style.display = 'flex';
+        
+        // Aggiungi l'ID e la data al form
+        document.getElementById('deletePresenzaId').value = id;
+        document.getElementById('deleteDataPresenza').value = dataPresenza;
+    }
+    
+    // Funzione per nascondere il popup
+    function hideDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.style.animation = 'modalFadeOut 0.3s ease-out';
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.animation = '';
+            presenzaIdToDelete = null;
+            dataPresenzaToDelete = null;
+        }, 300);
+    }
+    
+    // Funzione per confermare l'eliminazione
+    function confirmDelete() {
+        if (presenzaIdToDelete) {
+            // Invia il form
+            document.getElementById('deleteForm').submit();
+        }
+    }
+    
+    // Chiudi il popup cliccando fuori dal contenuto
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideDeleteModal();
+        }
+    });
+    
+    // Chiudi il popup con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('deleteModal').style.display === 'flex') {
+            hideDeleteModal();
+        }
+    });
+    
+    // Conserva i valori dei campi nel localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+        
+        // Ripristina i valori dal localStorage se esistono
+        const savedData = JSON.parse(localStorage.getItem('presenzeFormData') || '{}');
+        
+        // Data del selettore principale
+        const dataFilter = document.getElementById('data');
+        if (dataFilter) {
+            if (savedData.dataFilter) {
+                dataFilter.value = savedData.dataFilter;
+            }
+        }
+        
+        // Data del form di registrazione
+        const dataForm = document.getElementById('data_form');
+        if (dataForm) {
+            if (savedData.dataForm) {
+                dataForm.value = savedData.dataForm;
+            } else {
+                dataForm.value = '<%= dataSelezionata %>';
+            }
+        }
+        
+        // Ora
+        const oraInput = document.getElementById('ora');
+        if (oraInput) {
+            if (savedData.ora) {
+                oraInput.value = savedData.ora;
+            } else {
+                oraInput.value = currentTime;
+            }
+        }
+        
+        // Dipendente
+        const dipendenteSelect = document.getElementById('dipendente_id');
+        if (dipendenteSelect && savedData.dipendente) {
+            dipendenteSelect.value = savedData.dipendente;
+        }
+        
+        // Tipo
+        const tipoSelect = document.getElementById('tipo');
+        if (tipoSelect && savedData.tipo) {
+            tipoSelect.value = savedData.tipo;
+        }
+        
+        // Salva i valori quando cambiano
+        function saveFormData() {
+            const formData = {
+                dataFilter: dataFilter ? dataFilter.value : null,
+                dataForm: dataForm ? dataForm.value : null,
+                ora: oraInput ? oraInput.value : null,
+                dipendente: dipendenteSelect ? dipendenteSelect.value : null,
+                tipo: tipoSelect ? tipoSelect.value : null,
+                lastSaved: new Date().toISOString()
+            };
+            localStorage.setItem('presenzeFormData', JSON.stringify(formData));
+        }
+        
+        // Aggiungi event listener per salvare i dati
+        if (dataFilter) dataFilter.addEventListener('change', saveFormData);
+        if (dataForm) dataForm.addEventListener('change', saveFormData);
+        if (oraInput) oraInput.addEventListener('change', saveFormData);
+        if (dipendenteSelect) dipendenteSelect.addEventListener('change', saveFormData);
+        if (tipoSelect) tipoSelect.addEventListener('change', saveFormData);
+        
+        // Salva anche quando si invia il form
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', saveFormData);
+        });
+        
+        // Sincronizza i due campi data
+        if (dataForm && dataFilter) {
+            dataForm.addEventListener('change', function() {
+                dataFilter.value = this.value;
+                saveFormData();
+            });
+            
+            dataFilter.addEventListener('change', function() {
+                dataForm.value = this.value;
+                saveFormData();
+            });
+        }
+        
+        // Auto-submit quando si cambia la data nel selettore principale
+        if (dataFilter) {
+            dataFilter.addEventListener('change', function() {
+                if (this.form) {
+                    this.form.submit();
+                }
+            });
+        }
+        
+        // Memorizza la data corrente per sicurezza
+        localStorage.setItem('lastDataSelezionata', '<%= dataSelezionata %>');
+        
+        // Salva i dati al caricamento della pagina
+        saveFormData();
+    });
+</script>

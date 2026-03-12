@@ -1,0 +1,1405 @@
+<% layout('layout') %>
+
+<style>
+    .container {
+        padding: 20px;
+    }
+    .table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+        max-width: 100%;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+    }
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.9rem;
+    }
+    th, td {
+        padding: 6px 4px;
+        text-align: center;
+        vertical-align: middle;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+    }
+    th:last-child, td:last-child {
+        border-right: none;
+    }
+    tr:last-child td {
+        border-bottom: none;
+    }
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .col-codice {
+        min-width: 100px;
+        background-color: #f8f9fa;
+        border-left: 1px solid #dee2e6;
+    }
+    .col-descrizione {
+        min-width: 180px;
+        background-color: #f8f9fa;
+    }
+    .col-quantita {
+        min-width: 300px;
+        background-color: #e8f4f8 !important;
+    }
+    .col-totale {
+        min-width: 80px;
+        background-color: #f8f9fa;
+    }
+    .col-note {
+        min-width: 150px;
+        background-color: #f8f9fa;
+    }
+    .col-azioni {
+        min-width: 120px;
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+    }
+    
+    .cell-quantita {
+        background-color: #e8f4f8 !important;
+        padding: 2px !important;
+    }
+    
+    .qty-input-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 60px;
+        padding: 3px;
+    }
+    
+    .qty-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 1px;
+    }
+    
+    .qty-label {
+        font-size: 0.65rem;
+        color: #6c757d;
+        margin-bottom: 1px;
+        font-weight: 500;
+    }
+    
+    .input-qty { 
+        width: 50px !important; 
+        height: 28px;
+        text-align: center; 
+        padding: 1px 3px;
+        font-size: 0.8rem;
+        border: 1px solid #80bdff;
+        border-radius: 4px;
+        background: white;
+        transition: all 0.2s;
+    }
+    .input-qty:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+    
+    .btn-add-qty {
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        margin-top: 2px;
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn-remove-qty {
+        width: 18px;
+        height: 18px;
+        padding: 0;
+        font-size: 0.6rem;
+        margin-left: 2px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+    }
+    
+    .btn-remove-qty:hover {
+        background: #c82333;
+    }
+    
+    .qty-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin-left: 2px;
+    }
+    
+    .btn {
+        padding: 4px 8px;
+        margin: 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        border: none;
+    }
+    .btn-success { background: #28a745; color: white; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-primary { background: #007bff; color: white; }
+    .btn-warning { background: #ffc107; color: black; }
+    .btn-info { background: #17a2b8; color: white; }
+    .btn-sm { padding: 2px 6px; font-size: 0.8rem; }
+    
+    .input-small { 
+        width: 90px; 
+        padding: 5px;
+        font-size: 0.85rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    .input-medium { 
+        width: 120px; 
+        padding: 5px;
+        font-size: 0.85rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    .input-large { 
+        width: 200px; 
+        padding: 5px;
+        font-size: 0.85rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    .input-note {
+        width: 140px;
+        padding: 5px;
+        font-size: 0.85rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .custom-alert-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    }
+    
+    .custom-alert {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .custom-alert-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .custom-alert-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffc107;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .custom-alert-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #343a40;
+        margin: 0;
+    }
+    
+    .custom-alert-body {
+        margin-bottom: 25px;
+    }
+    
+    .custom-alert-message {
+        font-size: 1rem;
+        color: #495057;
+        margin-bottom: 15px;
+    }
+    
+    .custom-alert-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .custom-alert-btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .custom-alert-btn-cancel {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .custom-alert-btn-cancel:hover {
+        background: #5a6268;
+    }
+    
+    .custom-alert-btn-confirm {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .custom-alert-btn-confirm:hover {
+        background: #c82333;
+    }
+    
+    .sticky-header {
+        background: white;
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+    
+    .alert-fixed {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        opacity: 0;
+        transform: translateX(100%);
+        animation: slideIn 0.3s ease forwards;
+    }
+    
+    @keyframes slideIn {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .riga-modificata {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107 !important;
+        transition: all 0.3s ease;
+    }
+    
+    .riga-nuova {
+        background-color: #d1ecf1 !important;
+        border-left: 4px solid #17a2b8 !important;
+        transition: all 0.3s ease;
+    }
+    
+    .riga-salvata {
+        background-color: #d4edda !important;
+        border-left: 4px solid #28a745 !important;
+        transition: all 0.3s ease;
+    }
+    
+    .badge-modificato {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+        font-size: 0.7rem;
+        margin-left: 5px;
+    }
+    
+    .btn-salvando {
+        background-color: #6c757d !important;
+        color: white !important;
+        cursor: wait !important;
+    }
+    
+    .cliente-badge {
+        background-color: #e7f5ff;
+        border-left: 4px solid #0d6efd;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+</style>
+
+<!-- Container per notifiche -->
+<div id="notificationContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+<!-- Container per alert di conferma -->
+<div id="customAlertOverlay" class="custom-alert-overlay" style="display: none;">
+    <div class="custom-alert">
+        <div class="custom-alert-header">
+            <div class="custom-alert-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3 class="custom-alert-title">Conferma Eliminazione</h3>
+        </div>
+        <div class="custom-alert-body">
+            <p class="custom-alert-message" id="alertMessage">
+                Sei sicuro di voler eliminare questa riga?<br>
+                <small class="text-muted">Questa azione non può essere annullata.</small>
+            </p>
+        </div>
+        <div class="custom-alert-footer">
+            <button type="button" class="custom-alert-btn custom-alert-btn-cancel" onclick="hideCustomAlert()">
+                Annulla
+            </button>
+            <button type="button" class="custom-alert-btn custom-alert-btn-confirm" onclick="confirmDelete()">
+                Elimina
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="sticky-header">
+        <h2 class="mb-3">📊 Conteggio Produzione</h2>
+        
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <!-- Gruppo mese e cliente insieme -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mb-0"><strong>Mese:</strong></label>
+                    <input type="month" id="mese" class="form-control form-control-sm" style="width: 150px;" 
+                           value="<%= meseCorrente || '' %>">
+                </div>
+                
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mb-0"><strong>Cliente:</strong></label>
+                    <select id="clienteSelect" class="form-select form-select-sm" style="width: 250px;">
+                        <option value="tutti" selected>-- TUTTI I CLIENTI --</option>
+                    </select>
+                </div>
+                
+                <button onclick="caricaDati()" class="btn btn-primary btn-sm">
+                    <i class="bi bi-search"></i> Carica
+                </button>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm" onclick="esportaExcel()">
+                    <i class="bi bi-file-excel"></i> Excel
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="esportaPDF()">
+                    <i class="bi bi-file-pdf"></i> PDF
+                </button>
+            </div>
+            
+            <div class="ms-auto">
+                <button class="btn btn-info btn-sm" onclick="aggiungiRiga()" id="btnAggiungiRiga">
+                    <i class="bi bi-plus-circle"></i> Nuova Riga
+                </button>
+            </div>
+        </div>
+        
+        <!-- Badge informativo cliente selezionato -->
+        <div class="mt-2 cliente-badge">
+            <i class="bi bi-person-badge"></i> 
+            <span id="clienteSelezionatoInfo">Visualizzazione: TUTTI I CLIENTI</span>
+        </div>
+    </div>
+    
+    <div class="table-container">
+        <table id="tabellaProduzione" class="table">
+            <thead>
+                <tr>
+                    <th class="col-codice">CODICE</th>
+                    <th class="col-descrizione">DESCRIZIONE</th>
+                    <th class="col-quantita">
+                        <div class="d-flex flex-column align-items-center">
+                            <span>QUANTITÀ</span>
+                            <small class="text-muted">(per riga specifica)</small>
+                        </div>
+                    </th>
+                    <th class="col-totale">TOTALE RIGA</th>
+                    <th class="col-note">PREZZO</th>
+                    <th class="col-azioni">AZIONI</th>
+                </tr>
+            </thead>
+            <tbody id="righeBody">
+                <!-- Righe verranno aggiunte dinamicamente -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="col-codice">
+                        <strong>TOTALE GENERALE</strong>
+                        <span class="badge badge-modificato" id="modificheCounter" style="display: none;">
+                            <i class="bi bi-pencil"></i> <span id="modificheCount">0</span> modifica(e)
+                        </span>
+                    </td>
+                    <td id="totaleGenerale" class="col-totale" style="font-weight: bold; font-size: 1.1rem;">0</td>
+                    <td colspan="2" class="col-note"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="mt-3 d-flex justify-content-between align-items-center">
+        <div>
+            <span class="badge bg-info" id="righeCounter">0 righe</span>
+            <span class="badge bg-success ms-2" id="totaleCounter">Totale: 0</span>
+            <span class="badge bg-warning ms-2" id="righeModificateCounter" style="display: none;">
+                <i class="bi bi-exclamation-triangle"></i> <span id="righeModificateCount">0</span> riga(e) da salvare
+            </span>
+        </div>
+        <div>
+            <button class="btn btn-success btn-sm" onclick="salvaTutto()" id="btnSalvaTutto">
+                <i class="bi bi-save"></i> Salva Tutto
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let righeData = [];
+    let currentMonth = document.getElementById('mese').value;
+    let currentClientId = 'tutti'; // Default: tutti i clienti
+    let clientiList = [];
+    const basePath = '/conteggio-produzione';
+    let salvataggioInCorso = false;
+    let rigaDaEliminare = null;
+    let alertCallback = null;
+    let righeModificate = new Set();
+    
+    // Funzione di ordinamento alfabetico con numeri
+    function ordinaAlfabeticoConNumeri(a, b) {
+        const codiceA = a.codice_articolo || '';
+        const codiceB = b.codice_articolo || '';
+        
+        function estraiNumeri(str) {
+            const match = str.match(/\d+/g);
+            return match ? parseInt(match.join('')) : 0;
+        }
+        
+        function estraiTesto(str) {
+            return (str || '').replace(/\d+/g, '').trim();
+        }
+        
+        const testoA = estraiTesto(codiceA);
+        const testoB = estraiTesto(codiceB);
+        const numeriA = estraiNumeri(codiceA);
+        const numeriB = estraiNumeri(codiceB);
+        
+        if (testoA < testoB) return -1;
+        if (testoA > testoB) return 1;
+        return numeriA - numeriB;
+    }
+    
+    // Funzione per caricare la lista clienti
+    function caricaClienti() {
+        fetch(`${basePath}/api/clienti`)
+            .then(res => res.json())
+            .then(clienti => {
+                clientiList = clienti;
+                const select = document.getElementById('clienteSelect');
+                
+                let options = '<option value="tutti" selected>-- TUTTI I CLIENTI --</option>';
+                clienti.forEach(c => {
+                    options += `<option value="${c.id}">${c.ragionesociale}</option>`;
+                });
+                
+                select.innerHTML = options;
+                
+                // Aggiorna il badge informativo
+                aggiornaInfoCliente();
+                
+                // Carica i dati dopo aver caricato i clienti
+                caricaDati();
+            })
+            .catch(err => {
+                console.error('Errore caricamento clienti:', err);
+                document.getElementById('clienteSelect').innerHTML = '<option value="tutti" selected>-- TUTTI I CLIENTI --</option>';
+            });
+    }
+    
+    // Funzione per aggiornare il badge informativo del cliente
+    function aggiornaInfoCliente() {
+        const select = document.getElementById('clienteSelect');
+        const selectedOption = select.options[select.selectedIndex];
+        const infoSpan = document.getElementById('clienteSelezionatoInfo');
+        
+        if (selectedOption) {
+            if (select.value === 'tutti') {
+                infoSpan.innerHTML = '<span class="text-primary">Visualizzazione: TUTTI I CLIENTI</span>';
+            } else {
+                infoSpan.innerHTML = `Visualizzazione: <strong>${selectedOption.text}</strong>`;
+            }
+        }
+    }
+    
+    function segnaRigaModificata(rigaIndex) {
+        if (rigaIndex !== undefined && rigaIndex !== null) {
+            righeModificate.add(rigaIndex);
+            aggiornaContatoriModifiche();
+            
+            const riga = righeData[rigaIndex];
+            if (riga) {
+                const rigaId = riga.id || 'new-' + rigaIndex;
+                const rigaElement = document.getElementById(`riga-${rigaId}`);
+                if (rigaElement) {
+                    if (!riga.id) {
+                        rigaElement.classList.remove('riga-salvata');
+                        rigaElement.classList.add('riga-nuova');
+                    } else {
+                        rigaElement.classList.remove('riga-salvata');
+                        rigaElement.classList.add('riga-modificata');
+                    }
+                }
+            }
+        }
+    }
+    
+    function rimuoviRigaModificata(rigaIndex) {
+        righeModificate.delete(rigaIndex);
+        aggiornaContatoriModifiche();
+        
+        const riga = righeData[rigaIndex];
+        if (riga) {
+            const rigaId = riga.id || 'new-' + rigaIndex;
+            const rigaElement = document.getElementById(`riga-${rigaId}`);
+            if (rigaElement) {
+                rigaElement.classList.remove('riga-modificata', 'riga-nuova');
+                rigaElement.classList.add('riga-salvata');
+                
+                setTimeout(() => {
+                    rigaElement.classList.remove('riga-salvata');
+                }, 2000);
+            }
+        }
+    }
+    
+    function aggiornaContatoriModifiche() {
+        const count = righeModificate.size;
+        const righeModificateCounter = document.getElementById('righeModificateCounter');
+        const righeModificateCount = document.getElementById('righeModificateCount');
+        const btnSalvaTutto = document.getElementById('btnSalvaTutto');
+        const btnAggiungiRiga = document.getElementById('btnAggiungiRiga');
+        
+        if (count > 0) {
+            righeModificateCounter.style.display = 'inline';
+            righeModificateCount.textContent = count;
+            btnSalvaTutto.classList.remove('btn-success');
+            btnSalvaTutto.classList.add('btn-warning');
+            btnSalvaTutto.innerHTML = '<i class="bi bi-save"></i> Salva Tutto (' + count + ')';
+            
+            btnAggiungiRiga.disabled = false;
+            btnAggiungiRiga.classList.remove('btn-secondary');
+            btnAggiungiRiga.classList.add('btn-info');
+        } else {
+            righeModificateCounter.style.display = 'none';
+            btnSalvaTutto.classList.remove('btn-warning');
+            btnSalvaTutto.classList.add('btn-success');
+            btnSalvaTutto.innerHTML = '<i class="bi bi-save"></i> Salva Tutto';
+            
+            btnAggiungiRiga.disabled = false;
+            btnAggiungiRiga.classList.remove('btn-secondary');
+            btnAggiungiRiga.classList.add('btn-info');
+        }
+    }
+    
+    function showCustomAlert(message, callback) {
+        alertCallback = callback;
+        document.getElementById('alertMessage').innerHTML = message;
+        document.getElementById('customAlertOverlay').style.display = 'flex';
+    }
+    
+    function hideCustomAlert() {
+        document.getElementById('customAlertOverlay').style.display = 'none';
+        alertCallback = null;
+        rigaDaEliminare = null;
+    }
+    
+    function confirmDelete() {
+        if (alertCallback) {
+            alertCallback();
+        }
+        hideCustomAlert();
+    }
+    
+    function mostraNotifica(tipo, messaggio, autoClose = true) {
+        const container = document.getElementById('notificationContainer');
+        const alertId = 'alert-' + Date.now();
+        
+        let icon, bgColor;
+        switch(tipo) {
+            case 'success': icon = 'bi-check-circle'; bgColor = 'alert-success'; break;
+            case 'error': icon = 'bi-x-circle'; bgColor = 'alert-danger'; break;
+            case 'warning': icon = 'bi-exclamation-triangle'; bgColor = 'alert-warning'; break;
+            case 'info': icon = 'bi-info-circle'; bgColor = 'alert-info'; break;
+        }
+        
+        const alertHTML = `
+            <div id="${alertId}" class="alert ${bgColor} alert-dismissible fade show alert-fixed" role="alert">
+                <i class="bi ${icon} me-2"></i>${messaggio}
+                <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('${alertId}').remove()"></button>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('afterbegin', alertHTML);
+        
+        if (autoClose) {
+            setTimeout(() => {
+                const alertEl = document.getElementById(alertId);
+                if (alertEl) {
+                    alertEl.style.opacity = '0';
+                    alertEl.style.transition = 'opacity 0.3s';
+                    setTimeout(() => alertEl.remove(), 300);
+                }
+            }, 3000);
+        }
+    }
+    
+    // caricaDati ora include il cliente selezionato
+    function caricaDati() {
+        currentMonth = document.getElementById('mese').value;
+        const clienteSelect = document.getElementById('clienteSelect');
+        currentClientId = clienteSelect.value;
+        
+        if (!currentMonth) {
+            mostraNotifica('warning', 'Seleziona un mese', true);
+            return;
+        }
+        
+        aggiornaInfoCliente();
+        
+        mostraNotifica('info', 'Caricamento dati in corso...', false);
+        
+        let url = `${basePath}/api/produzione/${currentMonth}`;
+        if (currentClientId && currentClientId !== 'tutti') {
+            url += `/${currentClientId}`;
+        } else {
+            url += `/tutti`;
+        }
+        
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error('Errore caricamento dati');
+                return res.json();
+            })
+            .then(data => {
+                document.querySelectorAll('.alert-info').forEach(alert => alert.remove());
+                righeData = data;
+                righeModificate.clear();
+                renderTabella();
+                calcolaTotali();
+                aggiornaContatoriModifiche();
+                mostraNotifica('success', `Caricati ${data.length} righe`, true);
+            })
+            .catch(err => {
+                console.error('Errore caricamento:', err);
+                mostraNotifica('error', 'Errore nel caricamento dei dati', true);
+            });
+    }
+    
+    function renderTabella() {
+        const tbody = document.getElementById('righeBody');
+        tbody.innerHTML = '';
+        
+        const righeSalvate = righeData.filter(riga => riga.id);
+        const righeNuove = righeData.filter(riga => !riga.id);
+        
+        righeSalvate.sort(ordinaAlfabeticoConNumeri);
+        
+        const righeDaVisualizzare = [...righeSalvate, ...righeNuove];
+        
+        if (righeDaVisualizzare.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="6" class="text-center py-5 text-muted" style="background-color: #f8f9fa;">
+                    <i class="bi bi-table me-2"></i>Nessun dato disponibile. Clicca "Nuova Riga" per iniziare.
+                </td>
+            `;
+            tbody.appendChild(emptyRow);
+            document.getElementById('righeCounter').textContent = '0 righe';
+            return;
+        }
+        
+        righeDaVisualizzare.forEach((riga, displayIndex) => {
+            const tr = document.createElement('tr');
+            const rigaId = riga.id || 'new-' + displayIndex;
+            tr.id = `riga-${rigaId}`;
+            tr.className = 'align-middle';
+            
+            const realIndex = righeData.findIndex(r => 
+                (r.id && riga.id && r.id === riga.id) || 
+                (!r.id && !riga.id && r === riga)
+            );
+            
+            if (realIndex !== -1 && righeModificate.has(realIndex)) {
+                if (!riga.id) {
+                    tr.classList.add('riga-nuova');
+                } else {
+                    tr.classList.add('riga-modificata');
+                }
+            }
+            
+            const totaleRiga = riga.quantita ? riga.quantita.reduce((sum, qty) => sum + (parseInt(qty) || 0), 0) : 0;
+            riga.totale = totaleRiga;
+            
+            const tdCodice = document.createElement('td');
+            tdCodice.className = 'col-codice';
+            tdCodice.innerHTML = `
+                <input type="text" 
+                       class="form-control input-medium codice-input" 
+                       value="${riga.codice_articolo || ''}" 
+                       data-riga-id="${riga.id || ''}"
+                       data-riga-index="${realIndex}"
+                       onchange="aggiornaCodice(${realIndex}, this.value)"
+                       placeholder="COD001">
+            `;
+            
+            const tdDescrizione = document.createElement('td');
+            tdDescrizione.className = 'col-descrizione';
+            tdDescrizione.innerHTML = `
+                <input type="text" 
+                       class="form-control input-large descrizione-input" 
+                       value="${riga.descrizione || ''}" 
+                       data-riga-index="${realIndex}"
+                       onchange="aggiornaDescrizione(${realIndex}, this.value)"
+                       placeholder="Descrizione articolo">
+            `;
+            
+            const tdQuantita = document.createElement('td');
+            tdQuantita.className = 'col-quantita cell-quantita';
+            
+            let qtyHTML = '<div class="qty-input-group">';
+            const quantita = riga.quantita || [];
+            
+            if (quantita.length === 0) {
+                qtyHTML += `
+                    <div class="text-muted" style="font-size: 0.8rem;">
+                        Nessuna quantità<br>
+                        <button class="btn-add-qty" onclick="aggiungiQuantitaSingola(${realIndex})" title="Aggiungi quantità">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                quantita.forEach((qty, qtyIndex) => {
+                    qtyHTML += `
+                        <div class="qty-item">
+                            <span class="qty-label">Q${qtyIndex + 1}</span>
+                            <div class="d-flex align-items-center">
+                                <input type="number" 
+                                       class="form-control input-qty" 
+                                       value="${qty}" 
+                                       min="0"
+                                       step="1"
+                                       data-riga-index="${realIndex}"
+                                       data-qty-index="${qtyIndex}"
+                                       onchange="aggiornaQuantitaSingola(${realIndex}, ${qtyIndex}, this.value)"
+                                       onfocus="this.select()">
+                                <button class="btn-remove-qty" onclick="rimuoviQuantitaSingola(${realIndex}, ${qtyIndex})" title="Rimuovi">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                qtyHTML += `
+                    <div class="qty-actions">
+                        <button class="btn-add-qty" onclick="aggiungiQuantitaSingola(${realIndex})" title="Aggiungi quantità">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            qtyHTML += '</div>';
+            tdQuantita.innerHTML = qtyHTML;
+            
+            const tdTotale = document.createElement('td');
+            tdTotale.className = 'col-totale';
+            tdTotale.innerHTML = `
+                <span class="totale-riga-cell badge ${totaleRiga > 0 ? 'bg-success' : 'bg-secondary'}" 
+                      style="font-size: 1rem; min-width: 50px; display: inline-block;"
+                      id="totale-riga-${rigaId}">
+                    ${totaleRiga}
+                </span>
+            `;
+            
+            const tdNote = document.createElement('td');
+            tdNote.className = 'col-note';
+            tdNote.innerHTML = `
+                <input type="text" 
+                       class="form-control input-note note-input" 
+                       value="${riga.note || ''}" 
+                       data-riga-index="${realIndex}"
+                       onchange="aggiornaNote(${realIndex}, this.value)"
+                       placeholder="PREZZO...">
+            `;
+            
+            const tdAzioni = document.createElement('td');
+            tdAzioni.className = 'col-azioni';
+            tdAzioni.innerHTML = `
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-success" onclick="salvaRiga(${realIndex})" title="Salva" id="btn-salva-${rigaId}">
+                        <i class="bi bi-save"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="mostraConfermaEliminazione(${realIndex})" title="Elimina">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            tr.appendChild(tdCodice);
+            tr.appendChild(tdDescrizione);
+            tr.appendChild(tdQuantita);
+            tr.appendChild(tdTotale);
+            tr.appendChild(tdNote);
+            tr.appendChild(tdAzioni);
+            
+            tbody.appendChild(tr);
+        });
+        
+        document.getElementById('righeCounter').textContent = `${righeData.length} righe`;
+    }
+    
+    function aggiungiRiga() {
+        const nuovaRiga = {
+            codice_articolo: '',
+            descrizione: '',
+            quantita: [],
+            totale: 0,
+            note: ''
+        };
+        
+        const nuovoIndex = righeData.length;
+        righeData.push(nuovaRiga);
+        segnaRigaModificata(nuovoIndex);
+        renderTabella();
+        
+        setTimeout(() => {
+            const newRows = document.querySelectorAll('#righeBody tr.riga-nuova, #righeBody tr:last-child');
+            if (newRows.length > 0) {
+                const lastNewRow = newRows[newRows.length - 1];
+                lastNewRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                const firstInput = lastNewRow.querySelector('.codice-input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+    
+    function aggiungiQuantitaSingola(rigaIndex) {
+        if (!righeData[rigaIndex].quantita) {
+            righeData[rigaIndex].quantita = [];
+        }
+        righeData[rigaIndex].quantita.push(0);
+        calcolaTotaleRiga(rigaIndex);
+        segnaRigaModificata(rigaIndex);
+        aggiornaRigaSingola(rigaIndex);
+        
+        setTimeout(() => {
+            const rigaEl = document.getElementById(`riga-${righeData[rigaIndex].id || 'new-' + rigaIndex}`);
+            if (rigaEl) {
+                const qtyInputs = rigaEl.querySelectorAll('.input-qty');
+                if (qtyInputs.length > 0) {
+                    qtyInputs[qtyInputs.length - 1].focus();
+                }
+            }
+        }, 50);
+    }
+    
+    function aggiornaRigaSingola(rigaIndex) {
+        const riga = righeData[rigaIndex];
+        const rigaId = riga.id || 'new-' + rigaIndex;
+        const rigaElement = document.getElementById(`riga-${rigaId}`);
+        
+        if (!rigaElement) return;
+        
+        const totaleRiga = riga.quantita ? riga.quantita.reduce((sum, qty) => sum + (parseInt(qty) || 0), 0) : 0;
+        riga.totale = totaleRiga;
+        
+        const tdQuantita = rigaElement.querySelector('.col-quantita');
+        if (tdQuantita) {
+            let qtyHTML = '<div class="qty-input-group">';
+            const quantita = riga.quantita || [];
+            
+            if (quantita.length === 0) {
+                qtyHTML += `
+                    <div class="text-muted" style="font-size: 0.8rem;">
+                        Nessuna quantità<br>
+                        <button class="btn-add-qty" onclick="aggiungiQuantitaSingola(${rigaIndex})" title="Aggiungi quantità">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                quantita.forEach((qty, qtyIndex) => {
+                    qtyHTML += `
+                        <div class="qty-item">
+                            <span class="qty-label">Q${qtyIndex + 1}</span>
+                            <div class="d-flex align-items-center">
+                                <input type="number" 
+                                       class="form-control input-qty" 
+                                       value="${qty}" 
+                                       min="0"
+                                       step="1"
+                                       data-riga-index="${rigaIndex}"
+                                       data-qty-index="${qtyIndex}"
+                                       onchange="aggiornaQuantitaSingola(${rigaIndex}, ${qtyIndex}, this.value)"
+                                       onfocus="this.select()">
+                                <button class="btn-remove-qty" onclick="rimuoviQuantitaSingola(${rigaIndex}, ${qtyIndex})" title="Rimuovi">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                qtyHTML += `
+                    <div class="qty-actions">
+                        <button class="btn-add-qty" onclick="aggiungiQuantitaSingola(${rigaIndex})" title="Aggiungi quantità">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            qtyHTML += '</div>';
+            tdQuantita.innerHTML = qtyHTML;
+        }
+        
+        const totaleCell = document.getElementById(`totale-riga-${rigaId}`);
+        if (totaleCell) {
+            totaleCell.textContent = totaleRiga;
+            totaleCell.className = `totale-riga-cell badge ${totaleRiga > 0 ? 'bg-success' : 'bg-secondary'}`;
+        }
+        
+        calcolaTotali();
+    }
+    
+    function rimuoviQuantitaSingola(rigaIndex, qtyIndex) {
+        if (righeData[rigaIndex].quantita && righeData[rigaIndex].quantita.length > qtyIndex) {
+            righeData[rigaIndex].quantita.splice(qtyIndex, 1);
+            calcolaTotaleRiga(rigaIndex);
+            segnaRigaModificata(rigaIndex);
+            aggiornaRigaSingola(rigaIndex);
+        }
+    }
+    
+    function aggiornaQuantitaSingola(rigaIndex, qtyIndex, value) {
+        if (!righeData[rigaIndex].quantita) {
+            righeData[rigaIndex].quantita = [];
+        }
+        
+        if (righeData[rigaIndex].quantita.length <= qtyIndex) {
+            while (righeData[rigaIndex].quantita.length <= qtyIndex) {
+                righeData[rigaIndex].quantita.push(0);
+            }
+        }
+        
+        righeData[rigaIndex].quantita[qtyIndex] = parseInt(value) || 0;
+        calcolaTotaleRiga(rigaIndex);
+        segnaRigaModificata(rigaIndex);
+        
+        const riga = righeData[rigaIndex];
+        const rigaId = riga.id || 'new-' + rigaIndex;
+        const totaleRiga = riga.totale || 0;
+        
+        const totaleCell = document.getElementById(`totale-riga-${rigaId}`);
+        if (totaleCell) {
+            totaleCell.textContent = totaleRiga;
+            totaleCell.className = `totale-riga-cell badge ${totaleRiga > 0 ? 'bg-success' : 'bg-secondary'}`;
+        }
+        
+        calcolaTotali();
+    }
+    
+    function calcolaTotaleRiga(rigaIndex) {
+        const riga = righeData[rigaIndex];
+        const totale = riga.quantita ? riga.quantita.reduce((sum, qty) => sum + (parseInt(qty) || 0), 0) : 0;
+        riga.totale = totale;
+        
+        const rigaId = riga.id || 'new-' + rigaIndex;
+        const totaleCell = document.getElementById(`totale-riga-${rigaId}`);
+        if (totaleCell) {
+            totaleCell.textContent = totale;
+            totaleCell.className = `totale-riga-cell badge ${totale > 0 ? 'bg-success' : 'bg-secondary'}`;
+        }
+        
+        calcolaTotali();
+    }
+    
+    function calcolaTotali() {
+        const totaleGenerale = righeData.reduce((sum, riga) => sum + (riga.totale || 0), 0);
+        document.getElementById('totaleGenerale').textContent = totaleGenerale;
+        document.getElementById('totaleCounter').textContent = `Totale: ${totaleGenerale}`;
+    }
+    
+    function salvaRiga(rigaIndex) {
+        if (salvataggioInCorso) return;
+        
+        const riga = righeData[rigaIndex];
+        
+        if (!currentMonth) {
+            mostraNotifica('warning', 'Seleziona un mese prima di salvare', true);
+            return;
+        }
+        
+        if (!riga.codice_articolo || !riga.descrizione) {
+            mostraNotifica('warning', 'Codice e descrizione sono obbligatori', true);
+            return;
+        }
+        
+        calcolaTotaleRiga(rigaIndex);
+        
+        salvataggioInCorso = true;
+        const rigaId = riga.id || 'new-' + rigaIndex;
+        const saveBtn = document.getElementById(`btn-salva-${rigaId}`);
+        if (saveBtn) {
+            saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+            saveBtn.disabled = true;
+            saveBtn.classList.add('btn-salvando');
+        }
+        
+        // Invia anche il cliente_id selezionato (se è 'tutti' inviamo null)
+        const inputs = {
+            codice: riga.codice_articolo,
+            descrizione: riga.descrizione,
+            mese: currentMonth,
+            quantita: riga.quantita || [],
+            note: riga.note || '',
+            riga_id: riga.id || null,
+            cliente_id: currentClientId !== 'tutti' ? currentClientId : null
+        };
+        
+        fetch(`${basePath}/api/produzione/righe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Errore salvataggio');
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                if (data.riga_id && !righeData[rigaIndex].id) {
+                    righeData[rigaIndex].id = data.riga_id;
+                }
+                rimuoviRigaModificata(rigaIndex);
+                mostraNotifica('success', 'Riga salvata con successo', true);
+                
+                setTimeout(() => {
+                    caricaDati();
+                }, 1000);
+            }
+        })
+        .catch(err => {
+            console.error('Errore salvataggio:', err);
+            mostraNotifica('error', 'Errore nel salvataggio della riga', true);
+        })
+        .finally(() => {
+            salvataggioInCorso = false;
+            if (saveBtn) {
+                saveBtn.innerHTML = '<i class="bi bi-save"></i>';
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('btn-salvando');
+            }
+        });
+    }
+    
+    function salvaTutto() {
+        if (!currentMonth) {
+            mostraNotifica('warning', 'Seleziona un mese prima di salvare', true);
+            return;
+        }
+        
+        const righeDaSalvare = Array.from(righeModificate)
+            .map(index => ({ index, riga: righeData[index] }))
+            .filter(({ riga }) => riga.codice_articolo && riga.codice_articolo.trim() !== '' && 
+                                  riga.descrizione && riga.descrizione.trim() !== '');
+        
+        if (righeDaSalvare.length === 0) {
+            mostraNotifica('warning', 'Nessuna riga completa da salvare (codice e descrizione obbligatori)', true);
+            return;
+        }
+        
+        mostraNotifica('info', `Salvataggio di ${righeDaSalvare.length} righe in corso...`, false);
+        
+        const btnSalvaTutto = document.getElementById('btnSalvaTutto');
+        btnSalvaTutto.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
+        btnSalvaTutto.disabled = true;
+        
+        let salvate = 0;
+        let errori = 0;
+        
+        function processaSalvataggio({ index, riga }) {
+            calcolaTotaleRiga(index);
+            
+            const inputs = {
+                codice: riga.codice_articolo || '',
+                descrizione: riga.descrizione || '',
+                mese: currentMonth,
+                quantita: riga.quantita || [],
+                note: riga.note || '',
+                riga_id: riga.id || null,
+                cliente_id: currentClientId !== 'tutti' ? currentClientId : null
+            };
+            
+            fetch(`${basePath}/api/produzione/righe`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputs)
+            })
+            .then(res => res.json())
+            .then(data => {
+                salvate++;
+                if (data.success && data.riga_id && !riga.id) {
+                    riga.id = data.riga_id;
+                    righeData[index].id = data.riga_id;
+                }
+                
+                if (salvate + errori === righeDaSalvare.length) {
+                    finalizzaSalvataggio();
+                }
+            })
+            .catch(err => {
+                console.error('Errore salvataggio riga:', err);
+                errori++;
+                
+                if (salvate + errori === righeDaSalvare.length) {
+                    finalizzaSalvataggio();
+                }
+            });
+        }
+        
+        function finalizzaSalvataggio() {
+            document.querySelectorAll('.alert-info').forEach(alert => alert.remove());
+            
+            if (errori > 0) {
+                mostraNotifica('warning', `${salvate} righe salvate, ${errori} errori`, true);
+            } else {
+                mostraNotifica('success', `Tutte le ${salvate} righe salvate con successo!`, true);
+            }
+            
+            setTimeout(() => {
+                caricaDati();
+            }, 1000);
+            
+            righeDaSalvare.forEach(({ index }) => {
+                righeModificate.delete(index);
+            });
+            
+            aggiornaContatoriModifiche();
+            btnSalvaTutto.innerHTML = '<i class="bi bi-save"></i> Salva Tutto';
+            btnSalvaTutto.disabled = false;
+        }
+        
+        righeDaSalvare.forEach((riga, i) => {
+            setTimeout(() => {
+                processaSalvataggio(riga);
+            }, i * 300);
+        });
+    }
+    
+    function mostraConfermaEliminazione(rigaIndex) {
+        rigaDaEliminare = rigaIndex;
+        const riga = righeData[rigaIndex];
+        const codice = riga.codice_articolo || 'Senza codice';
+        const descrizione = riga.descrizione || 'Senza descrizione';
+        
+        const message = `
+            Stai per eliminare la riga:<br>
+            <strong>${codice} - ${descrizione}</strong><br>
+            <small>Totale riga: ${riga.totale || 0}</small><br><br>
+            <small class="text-muted">Questa azione non può essere annullata.</small>
+        `;
+        
+        showCustomAlert(message, function() {
+            eliminaRigaConfermata(rigaIndex);
+        });
+    }
+    
+    function eliminaRigaConfermata(rigaIndex) {
+        const rigaId = righeData[rigaIndex].id;
+        
+        righeModificate.delete(rigaIndex);
+        aggiornaContatoriModifiche();
+        
+        if (rigaId) {
+            fetch(`${basePath}/api/produzione/righe/${rigaId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    righeData.splice(rigaIndex, 1);
+                    renderTabella();
+                    calcolaTotali();
+                    mostraNotifica('success', 'Riga eliminata con successo', true);
+                    
+                    setTimeout(() => {
+                        caricaDati();
+                    }, 1000);
+                } else {
+                    mostraNotifica('error', data.message || 'Errore nell\'eliminazione', true);
+                }
+            })
+            .catch(err => {
+                console.error('Errore eliminazione:', err);
+                mostraNotifica('error', 'Errore di connessione', true);
+            });
+        } else {
+            righeData.splice(rigaIndex, 1);
+            renderTabella();
+            calcolaTotali();
+            mostraNotifica('success', 'Riga rimossa', true);
+        }
+    }
+    
+    function esportaExcel() {
+        if (!currentMonth) {
+            mostraNotifica('warning', 'Seleziona un mese', true);
+            return;
+        }
+        
+        if (righeData.length === 0) {
+            mostraNotifica('warning', 'Nessun dato da esportare', true);
+            return;
+        }
+        
+        let url = `${basePath}/export-produzione/excel/${currentMonth}`;
+        if (currentClientId && currentClientId !== 'tutti') {
+            url += `/${currentClientId}`;
+        } else {
+            url += `/tutti`;
+        }
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `produzione-${currentMonth}.xlsx`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        mostraNotifica('success', 'Esportazione Excel avviata', true);
+    }
+    
+    function esportaPDF() {
+        if (!currentMonth) {
+            mostraNotifica('warning', 'Seleziona un mese', true);
+            return;
+        }
+        
+        if (righeData.length === 0) {
+            mostraNotifica('warning', 'Nessun dato da esportare', true);
+            return;
+        }
+        
+        let url = `${basePath}/export-produzione/pdf/${currentMonth}`;
+        if (currentClientId && currentClientId !== 'tutti') {
+            url += `/${currentClientId}`;
+        } else {
+            url += `/tutti`;
+        }
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `produzione-${currentMonth}.pdf`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        mostraNotifica('success', 'Esportazione PDF avviata', true);
+    }
+    
+    function aggiornaCodice(rigaIndex, value) {
+        righeData[rigaIndex].codice_articolo = value;
+        segnaRigaModificata(rigaIndex);
+    }
+    
+    function aggiornaDescrizione(rigaIndex, value) {
+        righeData[rigaIndex].descrizione = value;
+        segnaRigaModificata(rigaIndex);
+    }
+    
+    function aggiornaNote(rigaIndex, value) {
+        righeData[rigaIndex].note = value;
+        segnaRigaModificata(rigaIndex);
+    }
+    
+    // Inizializzazione
+    document.addEventListener('DOMContentLoaded', () => {
+        caricaClienti();
+        
+        // Event listener per cambio cliente
+        document.getElementById('clienteSelect').addEventListener('change', function() {
+            aggiornaInfoCliente();
+            // Ricarica i dati quando cambia il cliente
+            caricaDati();
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' && e.key === 'Enter') {
+                e.preventDefault();
+                const inputs = Array.from(document.querySelectorAll('input'));
+                const currentIndex = inputs.indexOf(e.target);
+                if (currentIndex < inputs.length - 1) {
+                    inputs[currentIndex + 1].focus();
+                }
+            }
+            
+            if (e.key === 'Escape' && document.getElementById('customAlertOverlay').style.display === 'flex') {
+                hideCustomAlert();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,507 @@
+<% layout('layout') %>
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 50px auto 0;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .header-section h2 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.8rem;
+    }
+    
+    .month-selector {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .month-selector label {
+        font-weight: 500;
+        color: #555;
+        font-size: 0.9rem;
+    }
+    
+    .month-selector input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        height: 38px;
+        min-width: 150px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        height: 38px;
+        line-height: 1.5;
+    }
+    
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+    
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+    
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #219653;
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .report-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+    
+    .report-header {
+        padding: 15px 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .report-header h3 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+    
+    .total-days {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2c3e50;
+        background: #e8f4fc;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+    
+    .table-container {
+        max-height: 600px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    
+    .table-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+    
+    thead {
+        background: #f5f5f5;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    th {
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #666;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+        font-size: 0.85rem;
+    }
+    
+    td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .empty-state {
+        padding: 40px;
+        text-align: center;
+        color: #999;
+    }
+    
+    .days-count {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #27ae60;
+        color: white;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        min-width: 40px;
+        text-align: center;
+    }
+    
+    .days-count.zero {
+        background: #95a5a6;
+    }
+    
+    .days-count.low {
+        background: #f39c12;
+    }
+    
+    .date-list {
+        font-size: 0.8rem;
+        color: #666;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .date-list.expanded {
+        white-space: normal;
+        max-width: none;
+        background: #f8f9fa;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #eee;
+    }
+    
+    .summary-box {
+        background: #e8f4fc;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .summary-item {
+        text-align: center;
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .summary-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+    
+    .summary-label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    
+    .month-title {
+        text-align: center;
+        color: #3498db;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        padding: 12px;
+        background: #f0f8ff;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .pdf-individual-link {
+        margin-top: 5px;
+    }
+    
+    .pdf-individual-link a {
+        font-size: 0.75rem;
+        color: #e74c3c;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .pdf-individual-link a:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .month-selector {
+            width: 100%;
+        }
+        
+        .summary-box {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .summary-item {
+            min-width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .report-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .date-list {
+            max-width: 200px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header-section">
+        <h2>Report Presenze Mensili</h2>
+        <div class="month-selector">
+            <form method="GET" action="/dipendenti/presenze/report" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <label for="mese">Mese:</label>
+                <input type="month" id="mese" name="mese" value="<%= meseSelezionato %>" max="<%= oggi %>">
+                <button type="submit" class="btn btn-primary">Visualizza</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="/dipendenti" class="btn btn-secondary">← Torna ai Dipendenti</a>
+        <a href="/dipendenti/presenze" class="btn btn-secondary">← Gestione Presenze</a>
+        <a href="/dipendenti/presenze/pdf?mese=<%= meseSelezionato %>" class="btn btn-danger" download>
+            <i class="bi bi-file-pdf"></i> Esporta PDF Completo
+        </a>
+    </div>
+    
+    <% 
+        const totaleGiorni = report.reduce((sum, row) => sum + parseInt(row.giorni_presenza || 0), 0);
+        const meseFormattato = new Date(meseSelezionato + '-01').toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+        const dipendentiConPresenze = report.filter(row => row.giorni_presenza > 0).length;
+        const dipendentiSenzaPresenze = report.filter(row => !row.giorni_presenza || row.giorni_presenza == 0).length;
+        const giorniLavorativi = new Date(new Date(meseSelezionato + '-01').getFullYear(), new Date(meseSelezionato + '-01').getMonth() + 1, 0).getDate();
+        const mediaGiorni = report.length > 0 ? (totaleGiorni / report.length).toFixed(1) : 0;
+    %>
+    
+    <div class="month-title">
+        <i class="bi bi-calendar-month"></i>
+        <%= meseFormattato.toUpperCase() %>
+    </div>
+    
+    <div class="summary-box">
+        <div class="summary-item">
+            <div class="summary-value"><%= report.length %></div>
+            <div class="summary-label">Dipendenti Totali</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value"><%= dipendentiConPresenze %></div>
+            <div class="summary-label">Dipendenti con Presenze</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value"><%= totaleGiorni %></div>
+            <div class="summary-label">Giorni Totali di Presenza</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value"><%= mediaGiorni %></div>
+            <div class="summary-label">Media Giorni per Dipendente</div>
+        </div>
+    </div>
+    
+    <div class="report-section">
+        <div class="report-header">
+            <h3>Dettaglio Presenze Dipendenti</h3>
+            <div class="total-days">Totale giorni: <%= totaleGiorni %></div>
+        </div>
+        
+        <div class="table-container">
+            <% if (report.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dipendente</th>
+                            <th>Giorni di Presenza</th>
+                            <th>Date di Presenza</th>
+                            <th>PDF Individuale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% report.forEach(row => { 
+                            const giorni = row.giorni_presenza || 0;
+                            let countClass = 'days-count';
+                            if (giorni === 0) countClass += ' zero';
+                            else if (giorni < 10) countClass += ' low';
+                        %>
+                            <tr>
+                                <td><strong><%= row.cognome %> <%= row.nome %></strong></td>
+                                <td>
+                                    <span class="<%= countClass %>"><%= giorni %></span>
+                                    <% if (giorniLavorativi > 0) { %>
+                                        <br>
+                                        <small style="color: #666; font-size: 0.75rem;">
+                                            <%= ((giorni / giorniLavorativi) * 100).toFixed(1) %>% del mese
+                                        </small>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (row.date_presenze) { 
+                                        const dateArray = row.date_presenze.split(',');
+                                        const dateCount = dateArray.length;
+                                    %>
+                                        <div class="date-list" 
+                                             title="<%= row.date_presenze %>"
+                                             data-expanded="false"
+                                             onclick="toggleDateList(this)">
+                                            <% if (dateCount > 5) { %>
+                                                <%= dateArray.slice(0, 3).join(', ') %>... 
+                                                <span style="color: #3498db; font-weight: 500;">
+                                                    (+<%= dateCount - 3 %> date)
+                                                </span>
+                                            <% } else { %>
+                                                <%= row.date_presenze %>
+                                            <% } %>
+                                        </div>
+                                    <% } else { %>
+                                        <span style="color: #999; font-style: italic;">Nessuna presenza registrata</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div class="pdf-individual-link">
+                                        <a href="/dipendenti/presenze/pdf/<%= row.id %>?mese=<%= meseSelezionato %>" 
+                                           title="Scarica PDF individuale per <%= row.cognome %> <%= row.nome %>">
+                                            <i class="bi bi-file-pdf"></i> Scarica PDF
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <div class="empty-state">
+                    <p>Nessuna presenza registrata per questo mese</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-submit quando si cambia mese
+        document.getElementById('mese').addEventListener('change', function() {
+            this.form.submit();
+        });
+        
+        // Mostra/espande la lista delle date
+        window.toggleDateList = function(element) {
+            if (element.getAttribute('data-expanded') === 'true') {
+                element.classList.remove('expanded');
+                element.setAttribute('data-expanded', 'false');
+                
+                // Tronca il testo se è lungo
+                const text = element.getAttribute('title');
+                const dateArray = text.split(',');
+                if (dateArray.length > 5) {
+                    element.innerHTML = dateArray.slice(0, 3).join(', ') + '... ' +
+                        '<span style="color: #3498db; font-weight: 500;">' +
+                        '(+' + (dateArray.length - 3) + ' date)' +
+                        '</span>';
+                }
+            } else {
+                element.classList.add('expanded');
+                element.setAttribute('data-expanded', 'true');
+                element.innerHTML = element.getAttribute('title');
+            }
+        };
+        
+        // Inizializza tooltip per date troncate
+        document.querySelectorAll('.date-list').forEach(element => {
+            if (element.getAttribute('title')) {
+                element.setAttribute('data-expanded', 'false');
+            }
+        });
+    });
+</script>

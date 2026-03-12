@@ -1,0 +1,637 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .settings-section {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .settings-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 1rem;
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .settings-select {
+            padding: 0.55rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 180px;
+        }
+
+        .settings-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn-secondary {
+            padding: 0.45rem 1.2rem;
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe6e9;
+        }
+
+        .btn-danger {
+            padding: 0.45rem 1.2rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Modal per cambio password */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 0.6rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 0.6rem;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        /* Stile per l'alert Bootstrap personalizzato */
+        .alert-custom {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Stile per il numero di partenza */
+        .numero-input-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .numero-input {
+            width: 100px;
+            padding: 0.55rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .current-numero {
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .info-text {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.4;
+        }
+    </style>
+
+    <!-- Alert Bootstrap personalizzato -->
+    <div id="customAlert" class="alert-custom" style="display: none;">
+        <div class="alert alert-dismissible fade show" role="alert">
+            <div id="alertContent"></div>
+            <button type="button" class="btn-close" onclick="hideAlert()"></button>
+        </div>
+    </div>
+
+    <div class="page-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h2>Impostazioni</h2>
+        </div>
+
+        <!-- Generale -->
+        <div class="settings-section">
+            <div class="section-title">Generale</div>
+
+            <div class="settings-row">
+                <span class="settings-label">Lingua</span>
+                <select class="settings-select" id="linguaSelect">
+                    <option value="it" <%= lingua === 'it' ? 'selected' : '' %>>Italiano</option>
+                    <option value="en" <%= lingua === 'en' ? 'selected' : '' %>>English</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Impostazioni Bolle -->
+        <div class="settings-section">
+            <div class="section-title">Impostazioni Bolle</div>
+
+            <div class="settings-row">
+                <span class="settings-label">Numero di partenza bolle</span>
+                <div class="numero-input-container">
+                    <input type="number" id="numeroBollaInizio" min="0" class="numero-input">
+                    <button class="btn-secondary" onclick="salvaImpostazioniBolle()">
+                        <i class="bi bi-check-lg"></i> Salva
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-row" style="border-bottom: none; padding-top: 0;">
+                <span class="settings-label info-text">
+                    <i class="bi bi-info-circle"></i> 
+                    Le nuove bolle partiranno da questo numero. Valore corrente: <span id="currentBollaNumero" class="current-numero">0</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Esportazione -->
+        <div class="settings-section">
+            <div class="section-title">Esportazione dati</div>
+
+            <div class="settings-row">
+                <span class="settings-label">Clienti</span>
+                <a href="/settings/export/clienti" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Esporta
+                </a>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Prodotti</span>
+                <a href="/settings/export/prodotti" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Esporta
+                </a>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Dipendenti</span>
+                <a href="/settings/export/dipendenti" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Esporta
+                </a>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Bolle</span>
+                <a href="/settings/export/bolle" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Esporta
+                </a>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Merce</span>
+                <a href="/settings/export/merce" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Esporta
+                </a>
+            </div>
+        </div>
+
+        <!-- Backup -->
+        <div class="settings-section">
+            <div class="section-title">Backup</div>
+
+            <div class="settings-row">
+                <span class="settings-label">Backup completo database</span>
+                <a href="/settings/backup/database" class="btn-secondary" style="text-decoration: none;">
+                    <i class="bi bi-cloud-arrow-down-fill"></i> Scarica
+                </a>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Ripristina backup</span>
+                <button class="btn-secondary" onclick="showAlert('Funzionalità in sviluppo', 'info')">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Carica
+                </button>
+            </div>
+        </div>
+
+        <!-- Sicurezza -->
+        <div class="settings-section">
+            <div class="section-title">Sicurezza</div>
+
+            <div class="settings-row">
+                <span class="settings-label">Cambia password</span>
+                <button class="btn-secondary" onclick="openPasswordModal()">
+                    <i class="bi bi-pencil-fill"></i> Modifica
+                </button>
+            </div>
+
+            <div class="settings-row">
+                <span class="settings-label">Disconnetti tutti i dispositivi</span>
+                <button class="btn-danger" onclick="logoutAll()">
+                    <i class="bi bi-box-arrow-right"></i> Disconnetti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cambio Password -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Cambia Password</div>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label>Password attuale</label>
+                    <input type="password" id="oldPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Nuova password</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Conferma nuova password</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-primary">Salva</button>
+                    <button type="button" class="btn-cancel" onclick="closePasswordModal()">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Funzione per mostrare alert personalizzato
+    function showAlert(message, type = 'success') {
+        const alertDiv = document.getElementById('customAlert');
+        const alertContent = document.getElementById('alertContent');
+        const alertBox = alertDiv.querySelector('.alert');
+        
+        // Rimuovi tutte le classi di tipo precedenti
+        alertBox.classList.remove('alert-success', 'alert-danger', 'alert-warning', 'alert-info');
+        // Aggiungi la classe del tipo corrente
+        alertBox.classList.add(`alert-${type}`);
+        
+        // Imposta il contenuto
+        alertContent.innerHTML = message;
+        
+        // Mostra l'alert
+        alertDiv.style.display = 'block';
+        
+        // Nascondi automaticamente dopo 5 secondi
+        setTimeout(hideAlert, 5000);
+    }
+
+    function hideAlert() {
+        const alertDiv = document.getElementById('customAlert');
+        alertDiv.classList.add('fade-out');
+        
+        setTimeout(() => {
+            alertDiv.style.display = 'none';
+            alertDiv.classList.remove('fade-out');
+        }, 500);
+    }
+
+    // Funzione per mostrare un modal di conferma Bootstrap
+    async function showConfirmModal(title, message) {
+        return new Promise((resolve) => {
+            // Crea il modal dinamicamente
+            const modalId = 'confirmModal_' + Date.now();
+            const modalHtml = `
+                <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${title}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>${message}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button type="button" class="btn btn-primary" id="confirmBtn">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Aggiungi il modal al body
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = modalHtml;
+            document.body.appendChild(modalContainer.firstElementChild);
+            
+            // Inizializza il modal
+            const modalElement = document.getElementById(modalId);
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+            // Gestisci il click su Conferma
+            document.getElementById('confirmBtn').onclick = () => {
+                modal.hide();
+                setTimeout(() => {
+                    modalElement.remove();
+                    resolve(true);
+                }, 300);
+            };
+            
+            // Gestisci la chiusura del modal
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                setTimeout(() => {
+                    modalElement.remove();
+                    resolve(false);
+                }, 300);
+            });
+        });
+    }
+
+    async function salvaImpostazioniBolle() {
+        const numeroBollaInizio = document.getElementById('numeroBollaInizio').value;
+        
+        if (!numeroBollaInizio.trim()) {
+            showAlert('Inserisci un numero valido', 'warning');
+            return;
+        }
+
+        if (parseInt(numeroBollaInizio) < 0) {
+            showAlert('Il numero di partenza non può essere negativo', 'warning');
+            return;
+        }
+
+        // Mostra un modal di conferma Bootstrap
+        const confirmMessage = `Vuoi impostare il numero di partenza delle bolle a <strong>${numeroBollaInizio}</strong>?<br><br>Le prossime bolle inizieranno da questo numero.`;
+        const confirmation = await showConfirmModal('Conferma impostazione', confirmMessage);
+        
+        if (!confirmation) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/settings/impostazioni/bolle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ numeroBollaInizio })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // Aspetta che il modal si chiuda completamente prima di mostrare l'alert
+                setTimeout(() => {
+                    showAlert(result.message, 'success');
+                    document.getElementById('currentBollaNumero').textContent = numeroBollaInizio;
+                    
+                    // Ricarica le impostazioni per verificare che sia stato salvato
+                    setTimeout(() => {
+                        caricaImpostazioniBolle();
+                    }, 1000);
+                }, 400);
+            } else {
+                setTimeout(() => {
+                    showAlert('Errore: ' + result.error, 'danger');
+                }, 400);
+            }
+        } catch (err) {
+            console.error('Errore salvataggio impostazioni bolle:', err);
+            setTimeout(() => {
+                showAlert('Errore durante il salvataggio', 'danger');
+            }, 400);
+        }
+    }
+
+    // Disconnetti tutti i dispositivi
+    async function logoutAll() {
+        const confirmation = await showConfirmModal(
+            'Disconnetti tutti i dispositivi', 
+            'Vuoi davvero disconnetterti da tutti i dispositivi? Dovrai effettuare nuovamente il login.'
+        );
+        
+        if (!confirmation) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/settings/security/logout-all', {
+                method: 'POST'
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                setTimeout(() => {
+                    showAlert('Disconnesso da tutti i dispositivi', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                }, 400);
+            }
+        } catch (err) {
+            console.error('Errore:', err);
+            setTimeout(() => {
+                showAlert('Errore durante la disconnessione', 'danger');
+            }, 400);
+        }
+    }
+
+    // Cambio password
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+            showAlert('Le password non coincidono!', 'warning');
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            showAlert('La password deve essere di almeno 6 caratteri', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch('/settings/security/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    old_password: oldPassword, 
+                    new_password: newPassword 
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showAlert('Password cambiata con successo!', 'success');
+                closePasswordModal();
+            } else {
+                showAlert(result.message || 'Errore durante il cambio password', 'danger');
+            }
+        } catch (err) {
+            console.error('Errore:', err);
+            showAlert('Errore durante il cambio password', 'danger');
+        }
+    });
+
+    // Carica impostazioni bolle al caricamento della pagina
+    document.addEventListener('DOMContentLoaded', async function() {
+        await caricaImpostazioniBolle();
+    });
+
+    async function caricaImpostazioniBolle() {
+        try {
+            const response = await fetch('/settings/impostazioni/bolle');
+            const result = await response.json();
+            
+            if (result.success) {
+                document.getElementById('numeroBollaInizio').value = result.numeroBollaInizio;
+                document.getElementById('currentBollaNumero').textContent = result.numeroBollaInizio;
+            }
+        } catch (err) {
+            console.error('Errore caricamento impostazioni bolle:', err);
+            showAlert('Errore nel caricamento delle impostazioni', 'danger');
+        }
+    }
+</script>

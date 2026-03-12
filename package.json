@@ -1,0 +1,69 @@
+{
+  "name": "salmax",
+  "version": "1.4.2",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "publish": "electron-builder --win --publish always",
+    "migrate": "node migrate_passwords.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.9",
+    "ejs-mate": "^4.0.0",
+    "electron-updater": "^6.7.3",
+    "exceljs": "^4.4.0",
+    "express": "^4.22.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.2",
+    "mysql2": "^3.16.3",
+    "node-cron": "^4.2.1",
+    "pdfkit": "^0.17.2",
+    "pouchdb": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^25.9.8",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.sabatino.gestionalesalmax",
+    "productName": "FarbyonIt",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/public/img/logo2.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FabryonIt",
+      "installerIcon": "src/public/img/logo2.ico",
+      "uninstallerIcon": "src/public/img/logo2.ico",
+      "installerHeaderIcon": "src/public/img/logo2.ico",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "perMachine": false,
+      "allowElevation": true,
+      "include": "build/installer.nsh"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "ChrisFireXx",
+      "repo": "Gestionale"
+    }
+  }
+}

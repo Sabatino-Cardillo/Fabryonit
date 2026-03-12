@@ -1,0 +1,550 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto 0;
+            padding: 0 20px;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .employees-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            color: #666;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        th:last-child {
+            text-align: center;
+            width: 150px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            color: #333;
+        }
+
+        td:last-child {
+            text-align: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-save {
+            padding: 0.4rem 1rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            padding: 0.4rem 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .pagination {
+            padding: 1.25rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #paginaCorrente {
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Popup PDF */
+        #pdfPopup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pdfPopup.active {
+            display: flex;
+        }
+
+        .pdf-container {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .pdf-header {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .pdf-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-download {
+            padding: 0.5rem 1rem;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #229954;
+        }
+
+        .btn-close-popup {
+            padding: 0.5rem 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-close-popup:hover {
+            background: #c0392b;
+        }
+
+        #pdfViewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Stili per il popup di conferma personalizzato */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .confirm-box {
+            background: white;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .confirm-header {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .confirm-header i {
+            font-size: 1.2rem;
+        }
+
+        .confirm-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .confirm-body {
+            padding: 25px 20px;
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .confirm-actions {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-confirm {
+            padding: 8px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-confirm:hover {
+            background: #c0392b;
+        }
+
+        .btn-cancel {
+            padding: 8px 20px;
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #6c7b7d;
+        }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Gestione Bolle</h2>
+        </div>
+
+        <section class="employees-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Cliente</th>
+                        <th>Data Creazione</th>
+                        <th>Stato</th>
+                        <th>Numero Bolla</th>
+                        <th>Data Chiusura</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% bolle.forEach((bolla, index)=> { %>
+                        <tr class="bollaRow" data-index="<%= index %>">
+                            <td>
+                                <%= bolla.id %>
+                            </td>
+                            <td>
+                                <%= bolla.cliente_nome || '' %>
+                            </td>
+                            <td>
+                                <% if (bolla.data_creazione_personalizzata) { %>
+                                    <!-- Se c'è data personalizzata, mostra quella con ora 00:00:00 -->
+                                    <%= new Date(bolla.data_creazione_personalizzata).toLocaleDateString('it-IT') %> 00:00:00
+                                <% } else { %>
+                                    <!-- Altrimenti mostra la data di creazione con l'ora effettiva -->
+                                    <%= bolla.data_creazione ? new Date(bolla.data_creazione).toLocaleString('it-IT') : '' %>
+                                <% } %>
+                            </td>
+                            <td>
+                                <%= bolla.stato || '' %>
+                            </td>
+                            <td>
+                                <%= bolla.numero || '' %>
+                            </td>
+                            <td>
+                                <%= bolla.data_chiusura ? new Date(bolla.data_chiusura).toLocaleString('it-IT') : '' %>
+                            </td>
+                            <td>
+                                <button class="btn-save" onclick="ristampaBolla(<%= bolla.id %>)">
+                                    <i class="bi bi-printer-fill"></i>
+                                </button>
+                                <button type="button" class="btn-delete" onclick="mostraConfermaEliminazione('<%= bolla.id %>')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button class="pagination-btn" onclick="cambiaPagina(-1)" id="btnPrev">←</button>
+                <span id="paginaCorrente">1</span>
+                <button class="pagination-btn" onclick="cambiaPagina(1)">→</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Popup PDF -->
+    <div id="pdfPopup">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <h3>Anteprima Bolla</h3>
+                <div class="pdf-actions">
+                    <button class="btn-download" onclick="scaricaPDF()">
+                        <i class="bi bi-download"></i> Scarica
+                    </button>
+                    <button class="btn-close-popup" onclick="chiudiPopup()">
+                        <i class="bi bi-x-lg"></i> Chiudi
+                    </button>
+                </div>
+            </div>
+            <iframe id="pdfViewer"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentPDFBlobUrl = null;
+        let currentFilename = null;
+        let bollaDaEliminare = null;
+
+        // Paginazione
+        let pagina = 1;
+        const righePerPagina = 10;
+        const righe = document.querySelectorAll('.bollaRow');
+
+        function mostraPagina() {
+            const inizio = (pagina - 1) * righePerPagina;
+            const fine = pagina * righePerPagina;
+
+            righe.forEach((riga, index) => {
+                riga.style.display = (index >= inizio && index < fine) ? '' : 'none';
+            });
+
+            document.getElementById('paginaCorrente').textContent = pagina;
+            document.getElementById('btnPrev').disabled = pagina === 1;
+        }
+
+        function cambiaPagina(direzione) {
+            const maxPagina = Math.ceil(righe.length / righePerPagina);
+            pagina = Math.max(1, Math.min(pagina + direzione, maxPagina));
+            mostraPagina();
+        }
+
+        // Ristampa PDF
+        async function ristampaBolla(bollaId) {
+            try {
+                const response = await fetch(`/storico-bolle/ristampa/${bollaId}`);
+                const result = await response.json();
+
+                if (!result.success || !result.pdf) {
+                    alert('Errore durante la ristampa: ' + (result.error || 'PDF non disponibile'));
+                    return;
+                }
+
+                // Converti base64 in blob PDF
+                const byteCharacters = atob(result.pdf);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                if (currentPDFBlobUrl) {
+                    URL.revokeObjectURL(currentPDFBlobUrl);
+                }
+
+                currentPDFBlobUrl = URL.createObjectURL(blob);
+                currentFilename = result.filename || `bolla_${bollaId}.pdf`;
+
+                // Mostra il PDF
+                document.getElementById('pdfViewer').src = currentPDFBlobUrl;
+                document.getElementById('pdfPopup').classList.add('active');
+
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Errore durante la ristampa della bolla');
+            }
+        }
+
+        function chiudiPopup() {
+            document.getElementById('pdfPopup').classList.remove('active');
+            document.getElementById('pdfViewer').src = '';
+        }
+
+        function scaricaPDF() {
+            if (!currentPDFBlobUrl) {
+                alert('Nessun PDF disponibile');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = currentPDFBlobUrl;
+            link.download = currentFilename || 'bolla.pdf';
+            link.click();
+        }
+
+        // Sistema di conferma personalizzato per eliminazione
+        function mostraConfermaEliminazione(bollaId) {
+            bollaDaEliminare = bollaId;
+            
+            // Crea l'overlay di conferma
+            const overlay = document.createElement('div');
+            overlay.className = 'confirm-overlay';
+            overlay.setAttribute('data-confirm-overlay', 'true');
+            
+            const confirmBox = document.createElement('div');
+            confirmBox.className = 'confirm-box';
+            
+            confirmBox.innerHTML = `
+                <div class="confirm-header">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <h3>Attenzione</h3>
+                </div>
+                <div class="confirm-body">
+                    Sei sicuro di voler eliminare questa bolla?<br>
+                    <strong>Tutti i dati verranno persi definitivamente.</strong>
+                </div>
+                <div class="confirm-actions">
+                    <button class="btn-cancel" onclick="annullaEliminazione()">Annulla</button>
+                    <button class="btn-confirm" onclick="confermaEliminazione()">Elimina</button>
+                </div>
+            `;
+            
+            overlay.appendChild(confirmBox);
+            document.body.appendChild(overlay);
+        }
+
+        function annullaEliminazione() {
+            bollaDaEliminare = null;
+            const overlay = document.querySelector('[data-confirm-overlay]');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+
+        function confermaEliminazione() {
+            if (!bollaDaEliminare) return;
+            
+            // Crea un form nascosto per inviare la richiesta di eliminazione
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/storico-bolle/remove';
+            form.style.display = 'none';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'id';
+            input.value = bollaDaEliminare;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            
+            // Rimuove l'overlay di conferma
+            const overlay = document.querySelector('[data-confirm-overlay]');
+            if (overlay) {
+                overlay.remove();
+            }
+            
+            // Invia il form
+            form.submit();
+        }
+
+        // Chiudi con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                chiudiPopup();
+                annullaEliminazione();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', mostraPagina);
+    </script>

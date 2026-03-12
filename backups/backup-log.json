@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2026-02-09T15:00:13.720Z",
+    "filename": "backup-completo-2026-02-09T15-00-09-837Z.sql",
+    "size": 62324,
+    "sizeKB": "60.86",
+    "societaId": null
+  },
+  {
+    "timestamp": "2026-02-09T15:07:45.085Z",
+    "filename": "backup-completo-2026-02-09T15-07-38-164Z.sql",
+    "size": 62880,
+    "sizeKB": "61.41",
+    "sizeMB": "0.060",
+    "societaId": null
+  }
+]

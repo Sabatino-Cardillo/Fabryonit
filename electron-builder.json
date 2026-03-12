@@ -1,0 +1,14 @@
+{
+  "appId": "com.salmax.app",
+  "productName": "Salmax",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "src/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": "nsis"
+  }
+}

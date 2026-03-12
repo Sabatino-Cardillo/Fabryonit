@@ -1,0 +1,364 @@
+<% layout('layout') %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            margin-top: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-client-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[name="nome"] {
+            padding: 0.65rem 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        input[name="quantita"] {
+            padding: 0.65rem 5px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        input[type="text"]:focus,
+        input[name="nome"]:focus,
+        input[name="quantita"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button[type="submit"] {
+            padding: 0.65rem 1.5rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        button[type="submit"]:hover {
+            background: #2980b9;
+        }
+
+        .btn-cancel {
+            padding: 0.65rem 1.5rem;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .merce-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th {
+            padding: 1rem 1rem;
+            text-align: left;
+            color: #666;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border: none;
+        }
+
+        th:last-child {
+            text-align: center;
+            width: 120px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background-color: #f5f5f5;
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            color: #333;
+            border: none;
+        }
+
+        td:last-child {
+            text-align: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-modifica button[type="submit"] {
+            padding: 0.4rem 1rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .form-modifica button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        .form-elimina button[type="submit"] {
+            padding: 0.4rem 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .form-elimina button[type="submit"]:hover {
+            filter: brightness(0.9);
+        }
+
+        .pagination {
+            padding: 1.25rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #paginaCorrente {
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-left: 4px solid #e74c3c;
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #c0392b;
+            font-size: 0.95rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-error i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>Gestione Merce</h2>
+        </div>
+
+                <% if (merceInModifica) { %>
+                    <section class="add-client-section">
+                        <h3 class="section-title">Modifica merce</h3>
+                        <form method="POST" action="/merce/update">
+                            <input type="hidden" name="id" value="<%= merceInModifica.id %>">
+                            <input name="nome" placeholder="Inserisci nome" value="<%= merceInModifica.nome %>"
+                                required>
+                            <input name="quantita" placeholder="Inserisci quantità"
+                                value="<%= merceInModifica.quantita || '' %>">
+                                    <button type="submit">Salva Modifiche</button>
+                            <a href="/merce" class="btn-cancel">Annulla</a>
+                        </form>
+                    </section>
+                    <% } else { %>
+                        <section class="add-client-section">
+                            <h3 class="section-title">Aggiungi Merce</h3>
+                            <form method="POST" action="/merce/add">
+                                <input name="nome" placeholder="Inserisci nome" required>
+                                <input name="quantita" placeholder="Inserisci quantità">
+                                <button type="submit">Aggiungi</button>
+                            </form>
+                        </section>
+                        <% } %>
+
+        <section class="merce-section">
+            <table id="merceTable">
+                <thead>
+                    <tr>
+                        <th>Id Merce</th>
+                        <th>Tipo merce</th>
+                        <th>Quantità</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% merce.forEach((merce, index)=> { %>
+                        <tr class="merceRow" data-index="<%= index %>">
+                            <td>
+                                <%= merce.id %>
+                            </td>
+                            <td>
+                                <%= merce.nome %>
+                            </td>
+                            <td>
+                                <%= merce.quantita || '' %>
+                            </td>
+                            <td>
+                                <form action="/merce/modifica" method="POST" style="margin: 0;" class="form-modifica">
+                                    <input type="hidden" name="id" value="<%= merce.id %>">
+                                    <button type="submit"><i class="bi bi-pencil"></i></button>
+                                </form>
+                                <form action="/merce/remove" method="POST" style="margin: 0;" class="form-elimina">
+                                    <input type="hidden" name="id" value="<%= merce.id %>">
+                                    <button type="submit"><i class="bi bi-trash-fill"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button class="pagination-btn" onclick="cambiaPagina(-1)" id="btnPrev">←</button>
+                <span id="paginaCorrente">1</span>
+                <button class="pagination-btn" onclick="cambiaPagina(1)">→</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let pagina = 1;
+        const righePerPagina = 10;
+        const righe = document.querySelectorAll('.merceRow');
+
+        function mostraPagina() {
+            const inizio = (pagina - 1) * righePerPagina;
+            const fine = pagina * righePerPagina;
+
+            righe.forEach((riga, index) => {
+                riga.style.display = (index >= inizio && index < fine) ? '' : 'none';
+            });
+
+            document.getElementById('paginaCorrente').textContent = pagina;
+            document.getElementById('btnPrev').disabled = pagina === 1;
+        }
+
+        function cambiaPagina(direzione) {
+            const maxPagina = Math.ceil(righe.length / righePerPagina);
+            pagina = Math.max(1, Math.min(pagina + direzione, maxPagina));
+            mostraPagina();
+        }
+
+        document.addEventListener('DOMContentLoaded', mostraPagina);
+    </script>

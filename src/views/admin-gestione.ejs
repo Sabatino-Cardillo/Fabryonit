@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gestione Sistema</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link-custom {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .nav-link-custom:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link-custom.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .btn-add {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-add:hover {
+            background: #2980b9;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead {
+            background: #f8f9fa;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container">
+            <div class="admin-nav">
+                <div>
+                    <h1><i class="bi bi-shield-lock"></i> Admin Panel</h1>
+                    <div class="nav-links">
+                        <a href="/admin/tickets" class="nav-link-custom">
+                            <i class="bi bi-ticket"></i> Tickets
+                        </a>
+                        <a href="/admin/gestione" class="nav-link-custom active">
+                            <i class="bi bi-gear"></i> Gestione Sistema
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <span style="margin-right: 1rem;"><i class="bi bi-person-circle"></i> <%= adminName %></span>
+                    <a href="/admin/logout" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i> Esci
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Messaggi di successo/errore -->
+        <% if (success) { %>
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle"></i> <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+        <% if (error) { %>
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-triangle"></i> <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
+        <!-- SEZIONE SOCIETÀ -->
+        <div class="section-card">
+            <div class="section-header">
+                <h3><i class="bi bi-building"></i> Gestione Società</h3>
+                <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalNuovaSocieta">
+                    <i class="bi bi-plus-circle"></i> Nuova Società
+                </button>
+            </div>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ragione Sociale</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Comune</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% societa.forEach(soc => { %>
+                        <tr>
+                            <td><%= soc.id %></td>
+                            <td><strong><%= soc.ragione_sociale %></strong></td>
+                            <td><%= soc.username %></td>
+                            <td><%= soc.email %></td>
+                            <td><%= soc.comune %></td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" 
+                                        onclick="resetPasswordSocieta(<%= soc.id %>, '<%= soc.ragione_sociale %>')">
+                                    <i class="bi bi-key"></i> Reset Password
+                                </button>
+                                <form action="/admin/societa/<%= soc.id %>/elimina" method="POST" 
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Sei sicuro di voler eliminare <%= soc.ragione_sociale %>? Tutti i dati verranno eliminati!')">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Elimina
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEZIONE ADMIN -->
+        <div class="section-card">
+            <div class="section-header">
+                <h3><i class="bi bi-person-badge"></i> Gestione Amministratori</h3>
+                <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalNuovoAdmin">
+                    <i class="bi bi-plus-circle"></i> Nuovo Admin
+                </button>
+            </div>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% admins.forEach(adm => { %>
+                        <tr>
+                            <td><%= adm.id %></td>
+                            <td><strong><%= adm.nome %></strong></td>
+                            <td><%= adm.username %></td>
+                            <td><%= adm.email %></td>
+                            <td>
+                                <form action="/admin/admin/<%= adm.id %>/elimina" method="POST" 
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Sei sicuro di voler eliminare l\'admin <%= adm.nome %>?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Elimina
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL NUOVA SOCIETÀ -->
+    <div class="modal fade" id="modalNuovaSocieta" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-building"></i> Nuova Società</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/admin/societa/nuova" method="POST">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ragione Sociale *</label>
+                                <input type="text" class="form-control" name="ragione_sociale" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Partita IVA *</label>
+                                <input type="text" class="form-control" name="partita_iva" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Indirizzo *</label>
+                                <input type="text" class="form-control" name="indirizzo" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">CAP *</label>
+                                <input type="text" class="form-control" name="cap" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Comune *</label>
+                                <input type="text" class="form-control" name="comune" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Provincia *</label>
+                                <input type="text" class="form-control" name="provincia" maxlength="2" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Telefono *</label>
+                                <input type="tel" class="form-control" name="telefono" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Username *</label>
+                                <input type="text" class="form-control" name="username" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Password *</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Numero Bolla Inizio</label>
+                                <input type="number" class="form-control" name="numero_bolla_inizio" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Crea Società</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUOVO ADMIN -->
+    <div class="modal fade" id="modalNuovoAdmin" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-badge"></i> Nuovo Amministratore</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/admin/admin/nuovo" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nome Completo *</label>
+                            <input type="text" class="form-control" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Username *</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password *</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Crea Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RESET PASSWORD SOCIETÀ -->
+    <div class="modal fade" id="modalResetPassword" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key"></i> Reset Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formResetPassword" method="POST">
+                    <div class="modal-body">
+                        <p>Stai per resettare la password di: <strong id="societaNome"></strong></p>
+                        <div class="mb-3">
+                            <label class="form-label">Nuova Password *</label>
+                            <input type="password" class="form-control" name="nuova_password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-warning">Reset Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function resetPasswordSocieta(id, nome) {
+            document.getElementById('societaNome').textContent = nome;
+            document.getElementById('formResetPassword').action = `/admin/societa/${id}/reset-password`;
+            new bootstrap.Modal(document.getElementById('modalResetPassword')).show();
+        }
+    </script>
+</body>
+</html>

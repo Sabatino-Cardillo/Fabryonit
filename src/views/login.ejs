@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FabryonIt</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-user-select: none;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: calc(100% + 40px);
+            height: calc(100% + 40px);
+            background-image: url("/img/background.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(8px);
+            z-index: -1;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            max-width: 420px;
+            width: 90%;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        input::placeholder {
+            color: #bdc3c7;
+        }
+
+        .password-wrapper {
+            position: relative;
+            /* fondamentale per posizionare l'icona */
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px;
+            /* spazio per l'icona */
+        }
+
+        .password-wrapper i {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            /* distanza dal bordo destro */
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .password-wrapper i:hover {
+            color: #3498db;
+        }
+
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .remember-me label {
+            margin: 0;
+            font-weight: 400;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: #2980b9;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.95rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            background: #2980b9;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        /* ⭐ STILE PER MESSAGGI DI ERRORE */
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #c33;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Gestionale Fabryon</h1>
+            <p>Accedi al tuo account o contattaci per avere maggiori informazioni</p>
+        </div>
+
+        <!-- ⭐ MOSTRA ERRORE SE PRESENTE -->
+        <% if (error) { %>
+            <div class="error-message" id="popup">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <form action="/login" method="POST" id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Inserisci username" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Inserisci password">
+                            <i class="bi bi-eye-fill"></i>
+                        </div>
+                    </div>
+
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Ricordami</label>
+                        </div>
+                        <a href="#" class="forgot-password">Password dimenticata?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">Accedi</button>
+                </form>
+    </div>
+</body>
+<script>
+    setTimeout(() => {
+        const popup = document.getElementById("popup");
+
+        if (popup) {
+            popup.style.display = "none";
+        }
+    }, 5000);
+</script>
+<script>
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.querySelector('.password-wrapper i');
+
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+
+        togglePassword.classList.toggle('bi-eye-fill');
+        togglePassword.classList.toggle('bi-eye-slash-fill');
+    });
+</script>
+
+</html>

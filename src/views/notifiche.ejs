@@ -1,0 +1,207 @@
+<% layout('layout') %>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .page-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h2 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .btn-leggi-tutte {
+        padding: 0.65rem 1.5rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+
+    .btn-leggi-tutte:hover {
+        background: #2980b9;
+    }
+
+    .notifiche-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f5f5f5;
+    }
+
+    th {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        color: #666;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    tbody tr.non-letta {
+        background: #e3f2fd;
+    }
+
+    tbody tr.non-letta:hover {
+        background: #d1ecf1;
+    }
+
+    td {
+        padding: 1rem 1.5rem;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .notifica-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .icon-nuova_risposta {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .icon-cambio_stato {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    .icon-ticket_chiuso {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+
+    .badge-non-letta {
+        background: #2196f3;
+        color: white;
+        padding: 0.25rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        color: #ddd;
+    }
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h2>Notifiche</h2>
+        <% if (notifiche.some(n => !n.letta)) { %>
+            <button onclick="leggiTutte()" class="btn-leggi-tutte">
+                <i class="bi bi-check-all"></i> Segna tutte come lette
+            </button>
+        <% } %>
+    </div>
+
+    <div class="notifiche-section">
+        <% if (notifiche.length === 0) { %>
+            <div class="empty-state">
+                <i class="bi bi-bell-slash"></i>
+                <p>Nessuna notifica</p>
+            </div>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;"></th>
+                        <th>Messaggio</th>
+                        <th>Ticket</th>
+                        <th>Data</th>
+                        <th style="width: 80px; text-align: center;">Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% notifiche.forEach(notifica => { %>
+                        <tr class="<%= !notifica.letta ? 'non-letta' : '' %>" 
+                            onclick="window.location.href='/assistenza/<%= notifica.ticket_id %>'">
+                            <td>
+                                <div class="notifica-icon icon-<%= notifica.tipo %>">
+                                    <i class="bi <%= notifica.tipo === 'nuova_risposta' ? 'bi-chat-dots-fill' : notifica.tipo === 'cambio_stato' ? 'bi-arrow-repeat' : 'bi-check-circle-fill' %>"></i>
+                                </div>
+                            </td>
+                            <td><%= notifica.messaggio %></td>
+                            <td><%= notifica.ticket_oggetto %></td>
+                            <td><%= new Date(notifica.data_creazione).toLocaleDateString('it-IT') %></td>
+                            <td style="text-align: center;">
+                                <% if (!notifica.letta) { %>
+                                    <span class="badge-non-letta">NUOVA</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    async function leggiTutte() {
+        try {
+            const response = await fetch('/notifiche/leggi-tutte', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (err) {
+            console.error('Errore:', err);
+        }
+    }
+</script>

@@ -1,0 +1,321 @@
+<% layout('layout') %>
+<style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .home-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0;
+      margin-top: 50px;
+    }
+
+    .welcome-section {
+      background: white;
+      padding: 3rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    .welcome-section h1 {
+      color: #2c3e50;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .welcome-section h3 {
+      color: #3498db;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 2fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 4px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card.bolle {
+      border-left-color: #27ae60;
+    }
+
+    .stat-card.clienti {
+      border-left-color: #3498db;
+    }
+
+    .stat-card.dipendenti {
+      border-left-color: #db3434;
+    }
+
+    .stat-card.merce {
+      border-left-color: #ca34db;
+    }
+
+    .stat-card.prodotti {
+      border-left-color: #f39c12;
+    }
+
+    .stat-card.produzione {
+      border-left-color: #2c3e50;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .stat-card h5 {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .stat-value {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-card.bolle .stat-value {
+      color: #27ae60;
+    }
+
+    .stat-card.clienti .stat-value {
+      color: #3498db;
+    }
+
+    .stat-card.dipendenti .stat-value {
+      color: #db3434;
+    }
+
+    .stat-card.merce .stat-value {
+      color: #ca34db;
+    }
+
+    .stat-card.prodotti .stat-value {
+      color: #f39c12;
+    }
+
+    .stat-card.produzione .stat-value {
+      color: #2c3e50;
+    }
+
+    .stat-label {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #95a5a6;
+    }
+
+    .produzione-mese {
+      font-size: 0.8rem;
+      color: #3498db;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .info-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .info-section p {
+      color: #7f8c8d;
+      font-size: 1rem;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .info-section .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .quick-link {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      text-decoration: none;
+      color: #2c3e50;
+      transition: all 0.2s;
+      border: 1px solid #e0e0e0;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-color: #3498db;
+    }
+
+    .quick-link-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #3498db;
+    }
+
+    .quick-link-text {
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .welcome-section {
+        padding: 2rem 1.5rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 1.5rem;
+      }
+
+      .welcome-section h3 {
+        font-size: 1.1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+      }
+
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="home-container">
+  <div class="welcome-section">
+    <h1>Benvenuto nel tuo Gestionale</h1>
+    <h3>Ciao <%= nomeUtente %> 👋</h3>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card bolle">
+      <h5>Bolle Oggi</h5>
+      <div class="stat-value">
+        <%= totaleBolleOggi %>
+      </div>
+      <div class="stat-label">Bolle emesse oggi</div>
+    </div>
+
+    <div class="stat-card clienti">
+      <h5>Clienti</h5>
+      <div class="stat-value">
+        <%= totaleClienti %>
+      </div>
+      <div class="stat-label">Clienti registrati</div>
+    </div>
+
+    <div class="stat-card prodotti">
+      <h5>Prodotti</h5>
+      <div class="stat-value">
+        <%= totaleProdotti %>
+      </div>
+      <div class="stat-label">Prodotti disponibili</div>
+    </div>
+
+    <div class="stat-card dipendenti">
+      <h5>Dipendenti</h5>
+      <div class="stat-value">
+        <%= totaleDipendenti %>
+      </div>
+      <div class="stat-label">Dipendenti attuali</div>
+    </div>
+
+    <div class="stat-card merce">
+      <h5>Merce</h5>
+      <div class="stat-value">
+        <%= totaleMerce %>
+      </div>
+      <div class="stat-label">Merce attuale</div>
+    </div>
+
+    <!-- NUOVA CARD: Produzione Mensile -->
+    <div class="stat-card produzione">
+      <h5>Produzione Mensile</h5>
+      <div class="stat-value">
+        <%= totaleProduzioneMensile %>
+      </div>
+      <div class="stat-label">Pezzi prodotti questo mese</div>
+      <div class="produzione-mese">
+        Mese: <%= meseProduzione %>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <a href="/conteggio-produzione" class="quick-link">
+      <div class="quick-link-icon">
+        <i class="bi bi-calculator"></i>
+      </div>
+      <div class="quick-link-text">Conteggio Produzione</div>
+    </a>
+    
+    <a href="/bolle" class="quick-link">
+      <div class="quick-link-icon">
+        <i class="bi bi-receipt"></i>
+      </div>
+      <div class="quick-link-text">Gestione Bolle</div>
+    </a>
+    
+    <a href="/clienti" class="quick-link">
+      <div class="quick-link-icon">
+        <i class="bi bi-people"></i>
+      </div>
+      <div class="quick-link-text">Gestione Clienti</div>
+    </a>
+    
+    <a href="/storico-bolle" class="quick-link">
+      <div class="quick-link-icon">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <div class="quick-link-text">Storico Bolle</div>
+    </a>
+  </div>
+
+  <div class="info-section">
+    <div class="icon">
+      <i class="bi bi-info-circle"></i>
+    </div>
+    <p>Usa il menu laterale per gestire clienti, dipendenti, prodotti, bolle di consegna e molto altro.</p>
+  </div>
+</div>

@@ -1,0 +1,162 @@
+<% layout('layout') %>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .page-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h2 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .btn-nuovo-ticket {
+        padding: 0.65rem 1.5rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-nuovo-ticket:hover {
+        background: #2980b9;
+        color: white;
+    }
+
+    .tickets-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: #f5f5f5;
+    }
+
+    th {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        color: #666;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    td {
+        padding: 1rem 1.5rem;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-aperto { background: #fff3cd; color: #856404; }
+    .badge-in_lavorazione { background: #d1ecf1; color: #0c5460; }
+    .badge-risolto { background: #d4edda; color: #155724; }
+    .badge-chiuso { background: #e2e3e5; color: #383d41; }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        color: #ddd;
+    }
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h2>Centro Assistenza</h2>
+        <a href="/assistenza/nuovo" class="btn-nuovo-ticket">
+            <i class="bi bi-plus-circle"></i> Nuovo Ticket
+        </a>
+    </div>
+
+    <div class="tickets-section">
+        <% if (tickets.length === 0) { %>
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Nessun ticket di assistenza</p>
+            </div>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Oggetto</th>
+                        <th>Categoria</th>
+                        <th>Stato</th>
+                        <th>Priorità</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% tickets.forEach(ticket => { %>
+                        <tr onclick="window.location.href='/assistenza/<%= ticket.id %>'">
+                            <td><strong>#<%= ticket.id %></strong></td>
+                            <td><%= ticket.oggetto %></td>
+                            <td class="text-capitalize"><%= ticket.categoria %></td>
+                            <td>
+                                <span class="badge badge-<%= ticket.stato %>">
+                                    <%= ticket.stato.replace('_', ' ').toUpperCase() %>
+                                </span>
+                            </td>
+                            <td class="text-capitalize"><%= ticket.priorita %></td>
+                            <td><%= new Date(ticket.data_creazione).toLocaleDateString('it-IT') %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</div>
