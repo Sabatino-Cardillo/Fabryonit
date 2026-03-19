@@ -252,10 +252,8 @@ process.on('unhandledRejection', (reason, promise) => {
 // ===== GESTIONE AGGIORNAMENTI =====
 autoUpdater.setFeedURL({
   provider: 'github',
-  owner: 'ChrisFireXx',
-  repo: 'Gestionale',
-  private: true,
-  token: process.env.GH_TOKEN || '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'
+  owner: 'Sabatino-Cardillo',
+  repo: 'Gestionale-updates'
 });
 
 // Configurazione updater
