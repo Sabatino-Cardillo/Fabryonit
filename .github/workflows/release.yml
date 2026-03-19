@@ -23,4 +23,5 @@ jobs:
       - name: Build e pubblica
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run publish
